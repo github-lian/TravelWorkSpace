@@ -30,8 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
     //设置文字图标
     private void SetIcon(){
-        TextView tvIcon= this.findViewById(R.id.icon_back);
-        tvIcon.setTypeface(font);
+        TextView icon_back= this.findViewById(R.id.icon_back);
+        TextView icon_add= this.findViewById(R.id.icon_add);
+        icon_back.setTypeface(font);
+        icon_add.setTypeface(font);
     }
 
     //设置底部导航栏

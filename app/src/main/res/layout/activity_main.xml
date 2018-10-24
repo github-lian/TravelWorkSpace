@@ -8,20 +8,10 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#0099ff"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/title_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:background="@color/backgroundcolor">
 
             <TextView
@@ -29,18 +19,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:text="@string/icon_back"
                 android:textSize="30sp"
                 android:textColor="#fff" />
-
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_centerInParent="true"
                 android:fontFamily="微软雅黑"
-                android:textSize="32px"
+                android:textSize="18sp"
                 android:gravity="center"
                 android:text="消息"
                 android:textColor="#fff" />
@@ -49,17 +39,14 @@
                 android:id="@+id/icon_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
                 android:layout_alignParentRight="true"
                 android:text="@string/icon_add"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textColor="#fff" />
 
         </RelativeLayout>
-
-    </android.support.v7.widget.Toolbar>
-
-
-
 
     <com.hjm.bottomtabbar.BottomTabBar
         android:id="@+id/bottom_tab_bar"
