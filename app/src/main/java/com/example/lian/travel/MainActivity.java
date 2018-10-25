@@ -14,8 +14,8 @@ import com.hjm.bottomtabbar.BottomTabBar;
 
 /*
 !!提交代码步骤!!
-1.pull同步代码 VCS --> git --> pull
-2.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K
+1.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K
+2.pull同步代码 VCS --> git --> pull
 3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
  */
 
