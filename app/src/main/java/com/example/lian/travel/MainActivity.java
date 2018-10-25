@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         TextView icon_back= this.findViewById(R.id.icon_back);
         TextView icon_add= this.findViewById(R.id.icon_add);
         icon_back.setTypeface(font);
+//        111
         icon_add.setTypeface(font);
     }
 
