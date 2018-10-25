@@ -11,6 +11,14 @@ import com.example.lian.travel.Fragment.MineFragment;
 import com.example.lian.travel.Fragment.NoticeFragment;
 import com.hjm.bottomtabbar.BottomTabBar;
 
+
+/*
+!!提交代码步骤!!
+1.pull同步代码 VCS --> git --> pull
+2.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K
+3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
+ */
+
 public class MainActivity extends AppCompatActivity {
     private Typeface font;
     private BottomTabBar mBottomTabBar;
