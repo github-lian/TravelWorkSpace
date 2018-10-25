@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomTabBar mBottomTabBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
