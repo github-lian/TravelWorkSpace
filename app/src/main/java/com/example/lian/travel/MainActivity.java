@@ -3,6 +3,10 @@ package com.example.lian.travel;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.lian.travel.Fragment.GroupFragment;
@@ -10,6 +14,10 @@ import com.example.lian.travel.Fragment.MessageFragment;
 import com.example.lian.travel.Fragment.MineFragment;
 import com.example.lian.travel.Fragment.NoticeFragment;
 import com.hjm.bottomtabbar.BottomTabBar;
+import com.yalantis.contextmenu.lib.MenuObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /*
@@ -19,7 +27,7 @@ import com.hjm.bottomtabbar.BottomTabBar;
 3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Typeface font;
     private BottomTabBar mBottomTabBar;
     @Override
@@ -33,6 +41,17 @@ public class MainActivity extends AppCompatActivity {
         SetIcon();  //设置文字图标
 
         SetTabBar();  //设置底部导航栏
+
+        MenuObject close = new MenuObject();
+        close.setResource(R.drawable.icon_msg);
+
+        MenuObject send = new MenuObject("Send message");
+        send.setResource(R.drawable.icon_notice);
+
+        List<MenuObject> menuObjects = new ArrayList<>();
+        menuObjects.add(close);
+        menuObjects.add(send);
+
 
 
     }
@@ -56,4 +75,16 @@ public class MainActivity extends AppCompatActivity {
                 .addTabItem("我的", R.drawable.icon_mine, MineFragment.class);
 
     }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+
+        };
+    }
+
+
+
+
+
 }
