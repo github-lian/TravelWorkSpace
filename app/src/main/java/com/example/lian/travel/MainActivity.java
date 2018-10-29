@@ -1,43 +1,24 @@
 package com.example.lian.travel;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lian.travel.Fragment.GroupFragment;
 import com.example.lian.travel.Fragment.MessageFragment;
 import com.example.lian.travel.Fragment.MineFragment;
 import com.example.lian.travel.Fragment.NoticeFragment;
 import com.hjm.bottomtabbar.BottomTabBar;
-import com.yalantis.contextmenu.lib.MenuObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -48,8 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
+Tips：每天打开Android Studio第一件需要做的事--> pull同步代码 VCS --> git --> pull,
+因为别人可能提交了代码。
 !!提交代码步骤!!
-1.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K
+1.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K  注意不要提交工作区文件！！只需勾选APP就行
 2.pull同步代码 VCS --> git --> pull
 3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
  */
