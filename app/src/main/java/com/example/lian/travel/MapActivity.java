@@ -57,20 +57,20 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //默认显示普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         //        Marker marker = (Marker) (mBaiduMap.addMarker(help_add_icon(latLng, R.mipmap.icon_tourist)));
-        //定义Maker坐标点
-        LatLng point = new LatLng(39.963175, 116.400244);
-        //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.icon_mark1);
-        //构建MarkerOption，用于在地图上添加Marker
-        OverlayOptions option = new MarkerOptions()
-                .zIndex(99)  //设置Marker所在层级
-                .draggable(true)  //设置手势拖拽
-                .position(point)
-                .title("标记测试")
-                .icon(bitmap);
-        //在地图上添加Marker，并显示
-        mBaiduMap.addOverlay(option);
+//        //定义Maker坐标点
+//        LatLng point = new LatLng(39.963175, 116.400244);
+//        //构建Marker图标
+//        BitmapDescriptor bitmap = BitmapDescriptorFactory
+//                .fromResource(R.drawable.icon_mark1);
+//        //构建MarkerOption，用于在地图上添加Marker
+//        OverlayOptions option = new MarkerOptions()
+//                .zIndex(99)  //设置Marker所在层级
+//                .draggable(true)  //设置手势拖拽
+//                .position(point)
+//                .title("标记测试")
+//                .icon(bitmap);
+//        //在地图上添加Marker，并显示
+//        mBaiduMap.addOverlay(option);
         //开启交通图
         //mBaiduMap.setTrafficEnabled(true);
         //开启热力图
@@ -82,7 +82,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         initLocation();
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
         //开启定位
-//        mLocationClient.start();
+        mLocationClient.start();
         //图片点击事件，回到定位点
         mLocationClient.requestLocation();
     }

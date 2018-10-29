@@ -1,23 +1,23 @@
 package com.example.lian.travel.Bean;
 
 public class MessageBean {
-    private String head_portrait;//头像
+    private int head_portrait;//头像
     private String group_name;//组名
     private String sort_msg;//简略消息
     private String time;//时间
 
-    public MessageBean(String head_portrait, String group_name, String sort_msg, String time) {
+    public MessageBean(int head_portrait, String group_name, String sort_msg, String time) {
         this.head_portrait = head_portrait;
         this.group_name = group_name;
         this.sort_msg = sort_msg;
         this.time = time;
     }
 
-    public String getHead_portrait() {
+    public int getHead_portrait() {
         return head_portrait;
     }
 
-    public void setHead_portrait(String head_portrait) {
+    public void setHead_portrait(int head_portrait) {
         this.head_portrait = head_portrait;
     }
 

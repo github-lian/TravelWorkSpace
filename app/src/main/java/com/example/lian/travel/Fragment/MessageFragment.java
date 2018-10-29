@@ -12,6 +12,12 @@ import android.widget.ListView;
 import com.example.lian.travel.Adapter.MessageAdapter;
 import com.example.lian.travel.Bean.MessageBean;
 import com.example.lian.travel.R;
+import com.scwang.smartrefresh.header.MaterialHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -21,7 +27,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class MessageFragment extends Fragment {
-    private PullToRefreshView mPullToRefreshView;
+    private RefreshLayout mRefreshLayout;
 
     private ListView listView;
 
@@ -38,29 +44,42 @@ public class MessageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_message,container,false);
 
-        mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
         listView = (ListView) view.findViewById(R.id.list_view);
         addData();
-        mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
+        //初始化
+        mRefreshLayout = view.findViewById(R.id.refreshLayout);
+//设置 Header 为 Material风格
+        mRefreshLayout.setRefreshHeader(new MaterialHeader(getActivity()).setShowBezierWave(true));
+//设置 Footer 为 球脉冲
+        mRefreshLayout.setRefreshFooter(new BallPulseFooter(getActivity()).setSpinnerStyle(SpinnerStyle.Scale));
+
+        //刷新
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                mPullToRefreshView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        datas.add(new MessageBean("","实训小组1","哈哈","2018-10-28"));
-                        listView.setAdapter(new MessageAdapter(getActivity(),datas));
-                        //三秒后将下拉刷新的状态变为刷新完成
-                        mPullToRefreshView.setRefreshing(false);
-                    }
-                }, 2000);
+            public void onRefresh(RefreshLayout refreshlayout) {
+//                mData.clear();
+//                mNameAdapter.notifyDataSetChanged();
+                refreshlayout.finishRefresh();
             }
         });
+        //加载更多
+        mRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+//                for(int i=0;i<30;i++){
+//                    mData.add("小明"+i);
+//                }
+//                mNameAdapter.notifyDataSetChanged();
+                refreshlayout.finishLoadmore();
+            }
+        });
+
         return view;
     }
 
     private void addData(){
-        datas.add(new MessageBean("","实训小组1","哈哈","2018-10-28"));
-        datas.add(new MessageBean("","实训小组1","哈哈","2018-10-28"));
+        datas.add(new MessageBean(R.drawable.head,"实训小组1","哈哈","2018-10-28"));
+        datas.add(new MessageBean(R.drawable.head,"实训小组1","哈哈","2018-10-28"));
         listView.setAdapter(new MessageAdapter(getActivity(),datas));
     }
 

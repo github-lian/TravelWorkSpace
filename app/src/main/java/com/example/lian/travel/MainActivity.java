@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
-        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+        menuParams.setActionBarSize(72);
         menuParams.setMenuObjects(getMenuObjects());
         menuParams.setClosableOutside(false);
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
@@ -121,13 +121,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<MenuObject> menuObjects = new ArrayList<>();
 
         MenuObject close = new MenuObject();
-        close.setResource(R.drawable.icn_close);
+        close.setResource(R.drawable.menu_close);
 
-        MenuObject send = new MenuObject("Send message");
-        send.setResource(R.drawable.icn_1);
+        MenuObject send = new MenuObject("搜索群聊");
+        send.setResource(R.drawable.menu_search);
 
-        MenuObject like = new MenuObject("Like profile");
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.icn_2);
+        MenuObject like = new MenuObject("创建群聊");
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.menu_add);
         like.setBitmap(b);
 
         MenuObject addFr = new MenuObject("Add to friends");

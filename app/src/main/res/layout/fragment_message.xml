@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yalantis.phoenix.PullToRefreshView
-    android:id="@+id/pull_to_refresh"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.example.lian.travel.MainActivity"
+android:orientation="vertical">
+
+
+<com.scwang.smartrefresh.layout.SmartRefreshLayout
+    android:id="@+id/refreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    app:srlAccentColor="#00000000"
+    app:srlPrimaryColor="#00000000"
+    app:srlEnablePreviewInEditMode="true">
 
     <ListView
         android:id="@+id/list_view"
@@ -12,4 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</com.yalantis.phoenix.PullToRefreshView>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</LinearLayout>

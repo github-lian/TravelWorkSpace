@@ -55,7 +55,7 @@ public class MessageAdapter extends BaseAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.msgPic.setImageUrl(MsgList.get(position).getHead_portrait(),R.mipmap.ic_launcher,R.mipmap.ic_launcher);
+        viewHolder.msgPic.setImageResource(MsgList.get(position).getHead_portrait());
         viewHolder.msgTitle.setText(MsgList.get(position).getGroup_name());
         viewHolder.msgDesc.setText(MsgList.get(position).getSort_msg());
         viewHolder.msgTime.setText(MsgList.get(position).getTime());
