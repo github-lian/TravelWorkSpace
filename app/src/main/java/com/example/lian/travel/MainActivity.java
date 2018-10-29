@@ -1,5 +1,6 @@
 package com.example.lian.travel;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         setContentView(R.layout.activity_main);
 
+        initView();//初始化组件
+
+
         SetIcon();  //设置文字图标
 
         SetTabBar();  //设置底部导航栏
@@ -73,9 +77,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager = getSupportFragmentManager();
         initMenuFragment();
 
-        TextView tv = (TextView)findViewById(R.id.icon_add);
-        tv.setOnClickListener(this);
+
+
     }
+    //初始化组件
+    private void initView(){
+        TextView tv_add = (TextView)findViewById(R.id.icon_add);
+        TextView tv_back = (TextView)findViewById(R.id.icon_back);
+
+        tv_add.setOnClickListener(this);
+        tv_back.setOnClickListener(this);
+    }
+
 
     //设置文字图标
     private void SetIcon(){
@@ -178,6 +191,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
                     mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
                 }
+                break;
+            case R.id.icon_back:
+                Intent i = new Intent(MainActivity.this,MapActivity.class);
+                startActivity(i);
                 break;
         }
     }
