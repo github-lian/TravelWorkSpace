@@ -23,6 +23,10 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.example.lian.travel.Bean.SharePositionBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements View.OnClickListener {
     private MapView mMapView;
@@ -35,6 +39,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private LatLng latLng;
     private boolean isFirstLoc = true; // 是否首次定位
 
+    private List<SharePositionBean> position_data= new ArrayList<SharePositionBean>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,16 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //注意该方法要再setContentView方法之前实现
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_map);
+
+        position_data.add(new SharePositionBean(40.963175, 116.400244,R.drawable.icon_mark1,"测试"));
+        position_data.add(new SharePositionBean(40.863175, 116.400244,R.drawable.icon_mark1,"测试"));
+        position_data.add(new SharePositionBean(40.763175, 116.400244,R.drawable.icon_mark1,"测试"));
+        position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.icon_mark1,"测试"));
+
+
+
+
+
         initView();
         initMap();
     }
@@ -56,21 +72,34 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
         //默认显示普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
-        //        Marker marker = (Marker) (mBaiduMap.addMarker(help_add_icon(latLng, R.mipmap.icon_tourist)));
-//        //定义Maker坐标点
-//        LatLng point = new LatLng(39.963175, 116.400244);
-//        //构建Marker图标
-//        BitmapDescriptor bitmap = BitmapDescriptorFactory
-//                .fromResource(R.drawable.icon_mark1);
-//        //构建MarkerOption，用于在地图上添加Marker
-//        OverlayOptions option = new MarkerOptions()
-//                .zIndex(99)  //设置Marker所在层级
-//                .draggable(true)  //设置手势拖拽
-//                .position(point)
-//                .title("标记测试")
-//                .icon(bitmap);
-//        //在地图上添加Marker，并显示
-//        mBaiduMap.addOverlay(option);
+
+        //标记共享位置
+        for(int i=0;i<position_data.size();i++){
+            Log.i("list",position_data.get(i).getLatitude()+"");
+            sharePosition(position_data.get(i).getLatitude(),
+                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+        }
+
+        //移动到自己位置
+        MapStatus.Builder builder = new MapStatus.Builder();
+        builder.target(new LatLng(40.863175,116.400244));
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+
+        //        //设定中心点坐标
+//        LatLng cenpt =  new LatLng(40.863175,116.400244);
+//        //定义地图状态
+//        MapStatus mMapStatus = new MapStatus.Builder()
+//                //要移动的点
+//                .target(cenpt)
+//                //放大地图到20倍
+//                .zoom(20)
+//                .build();
+//        //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+//        MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+//        //改变地图状态
+//        mBaiduMap.setMapStatus(mMapStatusUpdate);
+
+
         //开启交通图
         //mBaiduMap.setTrafficEnabled(true);
         //开启热力图
@@ -82,9 +111,26 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         initLocation();
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
         //开启定位
-        mLocationClient.start();
+//        mLocationClient.start();
         //图片点击事件，回到定位点
         mLocationClient.requestLocation();
+    }
+
+    private void sharePosition(double latitude,double longitude ,int icon ,String title){
+        //定义Maker坐标点
+        LatLng point = new LatLng(latitude, longitude);
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                .fromResource(icon);
+        //构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option = new MarkerOptions()
+                .zIndex(9)  //设置Marker所在层级
+                .draggable(true)  //设置手势拖拽
+                .position(point)
+                .title(title)
+                .icon(bitmap);
+        //在地图上添加Marker，并显示
+        mBaiduMap.addOverlay(option);
     }
 
     //配置定位SDK参数
@@ -168,13 +214,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         buttons.setOnClickListener(this);
     }
 
-    /**
-     * 手机上显示共享位置的图标
-     * @param latLng
-     * @param id
-     * @return
-     */
-    public static MarkerOptions help_add_icon(LatLng latLng, int id){ MarkerOptions markOptiopns = new MarkerOptions().position(latLng) .icon(BitmapDescriptorFactory.fromResource(id)); return markOptiopns; }
 
 
     @Override

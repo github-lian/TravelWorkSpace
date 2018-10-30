@@ -27,8 +27,14 @@ android {
 
 
 dependencies {
-    implementation 'com.yalantis:contextmenu:1.0.4'
+    //侧滑删除
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
+
     // 上下文菜单
+    implementation 'com.yalantis:contextmenu:1.0.4'
+
     //recyclerview
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
