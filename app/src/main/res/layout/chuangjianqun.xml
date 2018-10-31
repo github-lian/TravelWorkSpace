@@ -4,7 +4,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--  -->
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
@@ -29,7 +28,7 @@
             android:fontFamily="微软雅黑"
             android:textSize="18sp"
             android:gravity="center"
-            android:text="修改群信息"
+            android:text="创建群聊"
             android:textColor="#fff" />
     </RelativeLayout>
     <LinearLayout
@@ -223,6 +222,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:background="@drawable/btshape"
-        android:text="保 存"
+        android:text="创 建"
         android:textColor="#FFFFFF" />
 </LinearLayout>
