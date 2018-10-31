@@ -57,15 +57,14 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-        <activity android:name=".SetActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".SearchGroupActivity"></activity>
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SetActivity" />
+        android:process=":remote" />
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".RetrieveActivity"></activity>
     </application>
 
 </manifest>
