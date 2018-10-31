@@ -6,9 +6,20 @@
     tools:context=".Fragment.NoticeFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="通知" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:background="#E0E0E0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="验证消息" />
+        <ListView
+            android:id="@+id/notice_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </LinearLayout>
 
 </FrameLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center_horizontal"
+        android:layout_margin="3dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/img_circle"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/book" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/img_circle"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:id="@+id/item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                android:text="实训小组"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/item_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:textSize="11sp"
+                android:text="实训内容书讯内容"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/btn_request">
+
+            <TextView
+                android:id="@+id/tv_population"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content"
+                android:text="200"/>
+            <TextView
+                android:id="@+id/tv_max"
+                android:layout_width="33dp"
+                android:layout_height="wrap_content"
+                android:text="/500"/>
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_request"
+            android:layout_width="65dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="申请加入"
+            android:textSize="11sp"
+            android:background="@drawable/button_request"/>
+
+    </RelativeLayout>
+</RelativeLayout>

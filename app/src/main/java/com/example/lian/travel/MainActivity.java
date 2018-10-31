@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private BottomTabBar mBottomTabBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -62,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initMenuFragment();
 
 
-
     }
     //初始化组件
     private void initView(){
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tv_add.setOnClickListener(this);
         tv_back.setOnClickListener(this);
+
     }
 
 
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //设置底部导航栏
     private void SetTabBar(){
+
         mBottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar);
         mBottomTabBar.init(getSupportFragmentManager())
                 .addTabItem("消息", R.drawable.icon_msg, MessageFragment.class)
@@ -161,6 +164,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onMenuItemClick(View clickedView, int position) {
         Toast.makeText(this, "Clicked on position: " + position, Toast.LENGTH_SHORT).show();
+    switch (position){
+        case 0:
+
+            break;
+        case 1:
+            Intent i = new Intent(MainActivity.this,SearchGroupActivity.class);
+            startActivity(i);
+            break;
+        case 2:
+
+            break;
+    }
     }
 
     @Override
@@ -182,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
 
 
 
