@@ -20,8 +20,8 @@ public class SearchGroupActivity extends AppCompatActivity implements View.OnCli
     private GroupBean group;
     private GroupAdapter groupAdapter;
 
-    private TextView tv_back_to_search; //返回上一个页面
-    private Button btn_request_group; //请求加群
+    private TextView back_to_search; //返回上一个页面
+    private Button request_group; //请求加群
 
     private int[] head={R.drawable.a,R.drawable.b,R.drawable.c};
     private String[] title={"群组1","群组2","群组3"};
@@ -44,11 +44,11 @@ public class SearchGroupActivity extends AppCompatActivity implements View.OnCli
         gList=new ArrayList<>();
         gListView=(ListView)findViewById(R.id.group_lv);
 
-        tv_back_to_search=(TextView)findViewById(R.id.tv_back_to_search);
-        tv_back_to_search.setOnClickListener(this);
+        back_to_search=(TextView)findViewById(R.id.tv_back_to_search);
+        back_to_search.setOnClickListener(this);
 
-        btn_request_group=(Button)findViewById(R.id.btn_request_group);
-        btn_request_group.setOnClickListener(this);
+        request_group=(Button)findViewById(R.id.btn_request_group);
+        request_group.setOnClickListener(this);
     }
 
     //显示群名列表
@@ -75,7 +75,7 @@ public class SearchGroupActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case R.id.btn_request_group:
-                btn_request_group.setText("审核中");
+                request_group.setText("审核中");
                 break;
         }
     }

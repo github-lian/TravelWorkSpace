@@ -43,6 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AboutUsActivity"></activity>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -55,6 +56,14 @@
             android:enabled="true"
             android:process=":remote" />
 
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SetActivity" />
+        android:process=":remote" />
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".RetrieveActivity"></activity>
         <activity android:name=".SearchGroupActivity" />
         <activity android:name=".SearchGroupNumberActivity"></activity>
         <activity android:name=".GroupChatActivity"></activity>
