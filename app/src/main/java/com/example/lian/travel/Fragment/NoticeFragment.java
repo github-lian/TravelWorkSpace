@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.lian.travel.Adapter.NoticeAdapter;
+import com.example.lian.travel.Bean.NoticeBean;
 import com.example.lian.travel.R;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +42,9 @@ import java.util.List;
 public class NoticeFragment extends Fragment implements View.OnClickListener{
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private ListView listView;
 
+    private List<NoticeBean> datas = new ArrayList<NoticeBean>();
     public NoticeFragment() {
         // Required empty public constructor
     }
@@ -49,6 +54,8 @@ public class NoticeFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notice,container,false);
+        listView = (ListView) view.findViewById(R.id.notice_listview);
+        addData();
 //        initMenuFragment();
 //        fragmentManager = view.getSupportFragmentManager();
 //        initToolbar();
@@ -56,7 +63,11 @@ public class NoticeFragment extends Fragment implements View.OnClickListener{
 //        addFragment(new MainFragment(), true, R.id.container);
         return view;
     }
-
+    private void addData(){
+        datas.add(new NoticeBean(R.drawable.head,"实训小组1","嘻嘻","处理人：小a"));
+        datas.add(new NoticeBean(R.drawable.head,"实训小组1","移除a","处理人：小a"));
+        listView.setAdapter(new NoticeAdapter(getActivity(),datas));
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -125,7 +136,6 @@ public class NoticeFragment extends Fragment implements View.OnClickListener{
         menuObjects.add(block);
         return menuObjects;
     }
-
 
     @Override
     public void onClick(View view) {
