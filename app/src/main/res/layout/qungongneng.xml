@@ -160,7 +160,7 @@
             android:textSize="20dp"
             android:layout_marginTop="20dp"
             android:text="视频共享" />
-
+<!--  -->
         <TextView
             android:id="@+id/tv_8"
             android:layout_width="0dp"
