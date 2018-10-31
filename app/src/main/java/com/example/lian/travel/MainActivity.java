@@ -50,28 +50,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onCreate(savedInstanceState);
 
-        font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");//引用文字图标
         setContentView(R.layout.activity_main);
 
-        initView();//初始化组件啊啊
-
+        initView();//初始化组件
 
         SetIcon();  //设置文字图标
 
         SetTabBar();  //设置底部导航栏
 
-        fragmentManager = getSupportFragmentManager();
-        initMenuFragment();
-
+        initMenuFragment();  //初始化右上角菜单
 
     }
     //初始化组件
     private void initView(){
-        TextView tv_add = (TextView)findViewById(R.id.icon_add);
-        TextView tv_back = (TextView)findViewById(R.id.icon_back);
-
-        tv_add.setOnClickListener(this);
-        tv_back.setOnClickListener(this);
 
     }
 
@@ -83,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         icon_back.setTypeface(font);
 //        1233333333
         icon_add.setTypeface(font);
+
+        fragmentManager = getSupportFragmentManager();
+
+        icon_back.setOnClickListener(this);
+        icon_add.setOnClickListener(this);
     }
 
     //设置底部导航栏
@@ -97,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //初始化右上角菜单
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
         menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
@@ -105,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
     }
 
+    //右上角菜单子项集合
     private List<MenuObject> getMenuObjects() {
         // You can use any [resource, bitmap, drawable, color] as image:
         // item.setResource(...)
@@ -161,9 +160,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    //右上角菜单点击事件
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        Toast.makeText(this, "Clicked on position: " + position, Toast.LENGTH_SHORT).show();
     switch (position){
         case 0:
 

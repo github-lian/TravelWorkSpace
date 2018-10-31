@@ -3,6 +3,7 @@ package com.example.lian.travel;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+//群聊天界面
 public class GroupChatActivity extends AppCompatActivity {
 
     @Override

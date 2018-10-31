@@ -28,6 +28,7 @@ import com.example.lian.travel.Bean.SharePositionBean;
 import java.util.ArrayList;
 import java.util.List;
 
+//共享群内位置信息界面
 public class MapActivity extends AppCompatActivity implements View.OnClickListener {
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -53,10 +54,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         position_data.add(new SharePositionBean(40.863175, 116.400244,R.drawable.icon_mark1,"测试"));
         position_data.add(new SharePositionBean(40.763175, 116.400244,R.drawable.icon_mark1,"测试"));
         position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.icon_mark1,"测试"));
-
-
-
-
 
         initView();
         initMap();

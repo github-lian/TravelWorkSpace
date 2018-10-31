@@ -31,9 +31,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
@@ -43,27 +43,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".GroupChatActivity"></activity>
+        <activity android:name=".SetActivity"></activity>
+        <activity android:name=".SearchGroupActivity"></activity>
 
+        //百度地图key
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="GWuUMTadHyDyATeMfslejubn1n9Nju3i" />
-
-        <activity android:name=".MapActivity" />
         //service组件，固定配置
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
-
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-        <activity android:name=".SetActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".SearchGroupActivity"></activity>
     </application>
 
 </manifest>

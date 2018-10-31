@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 
 /**
- * Created by Dell on 2018/10/24.
+ * 将图片转换成圆形头像
  */
 
 public class CircleImageView extends ImageView {

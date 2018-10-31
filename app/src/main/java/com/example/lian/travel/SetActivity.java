@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.Set;
 
+//设置界面
 public class SetActivity extends AppCompatActivity {
     private ListView set_listView;
     private String [] text={"账号管理","手机号码","聊天记录","版本更新"};
