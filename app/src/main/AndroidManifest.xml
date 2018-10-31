@@ -55,7 +55,8 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".SearchGroupActivity"></activity>
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".SearchGroupNumberActivity"></activity>
     </application>
 
 </manifest>

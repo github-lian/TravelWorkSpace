@@ -38,7 +38,7 @@ public class GroupAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        View v=View.inflate(gContext,R.layout.list_item,null);
+        View v=View.inflate(gContext,R.layout.list_item_search,null);
         GroupBean groupBean = groupBeanList.get(i);
         ImageView head= (ImageView) v.findViewById(R.id.img_circle);
         TextView item_title=(TextView)v.findViewById(R.id.item_title);

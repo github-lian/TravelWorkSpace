@@ -23,10 +23,23 @@ public class SearchGroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_group);
+        setContentView(R.layout.activity_searched_group);
 
+        //初始化组件
+        initView();
+
+        //显示群名列表
+        showGroup();
+    }
+
+    //初始化组件
+    private void initView(){
         gList=new ArrayList<>();
         gListView=(ListView)findViewById(R.id.group_lv);
+    }
+
+    //显示群名列表
+    private void showGroup(){
         for (int i=0;i<3;i++){
             int head1=head[i];
             String title1=title[i];
