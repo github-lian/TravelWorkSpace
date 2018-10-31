@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         setContentView(R.layout.activity_main);
 
-        initView();//初始化组件
+        initView();//初始化组件啊啊
 
 
         SetIcon();  //设置文字图标
