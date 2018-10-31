@@ -30,7 +30,6 @@ public class MessageFragment extends Fragment {
     private RefreshLayout mRefreshLayout;
 
     private ListView listView;
-
     private List<MessageBean> datas = new ArrayList<MessageBean>();
 
     public MessageFragment() {

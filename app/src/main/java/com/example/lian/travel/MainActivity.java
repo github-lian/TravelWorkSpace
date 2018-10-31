@@ -35,7 +35,7 @@ Tips：每天打开Android Studio第一件需要做的事--> pull同步代码 VC
 1.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K  注意不要提交工作区文件！！只需勾选APP就行
 2.pull同步代码 VCS --> git --> pull
 3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
- */
+*/
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,OnMenuItemClickListener, OnMenuItemLongClickListener{
     private Typeface font;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
-        menuParams.setActionBarSize(72);
+        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
         menuParams.setMenuObjects(getMenuObjects());
         menuParams.setClosableOutside(false);
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
