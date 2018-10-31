@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView icon_back= this.findViewById(R.id.icon_back);
         TextView icon_add= this.findViewById(R.id.icon_add);
         icon_back.setTypeface(font);
-//        1233333333
+//        12333333335555
         icon_add.setTypeface(font);
     }
 
