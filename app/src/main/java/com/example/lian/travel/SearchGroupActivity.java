@@ -1,8 +1,12 @@
 package com.example.lian.travel;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.lian.travel.Adapter.GroupAdapter;
 import com.example.lian.travel.Bean.GroupBean;
@@ -10,11 +14,14 @@ import com.example.lian.travel.Bean.GroupBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchGroupActivity extends AppCompatActivity {
+public class SearchGroupActivity extends AppCompatActivity implements View.OnClickListener{
     private ListView gListView; //群组列表视图
     private List<GroupBean> gList;
     private GroupBean group;
     private GroupAdapter groupAdapter;
+
+    private TextView tv_back_to_search; //返回上一个页面
+    private Button btn_request_group; //请求加群
 
     private int[] head={R.drawable.a,R.drawable.b,R.drawable.c};
     private String[] title={"群组1","群组2","群组3"};
@@ -36,6 +43,12 @@ public class SearchGroupActivity extends AppCompatActivity {
     private void initView(){
         gList=new ArrayList<>();
         gListView=(ListView)findViewById(R.id.group_lv);
+
+        tv_back_to_search=(TextView)findViewById(R.id.tv_back_to_search);
+        tv_back_to_search.setOnClickListener(this);
+
+        btn_request_group=(Button)findViewById(R.id.btn_request_group);
+        btn_request_group.setOnClickListener(this);
     }
 
     //显示群名列表
@@ -51,5 +64,19 @@ public class SearchGroupActivity extends AppCompatActivity {
         }
         groupAdapter=new GroupAdapter(SearchGroupActivity.this,gList);
         gListView.setAdapter(groupAdapter);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.tv_back_to_search:
+                Intent intent1=new Intent(SearchGroupActivity.this,SearchGroupNumberActivity.class);
+                startActivity(intent1);
+                break;
+
+            case R.id.btn_request_group:
+                btn_request_group.setText("审核中");
+                break;
+        }
     }
 }

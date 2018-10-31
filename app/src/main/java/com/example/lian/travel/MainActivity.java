@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -169,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             break;
         case 1:
-            Intent i = new Intent(MainActivity.this,SearchGroupActivity.class);
+            Intent i = new Intent(MainActivity.this,SearchGroupNumberActivity.class);
             startActivity(i);
             break;
         case 2:
