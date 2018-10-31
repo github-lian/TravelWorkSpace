@@ -12,7 +12,7 @@
         android:background="#666666"
         android:orientation="vertical">
 
-        <com.all.cloudtroupapp.CircleImageView
+        <com.example.lian.travel.CircleImageView
             android:id="@+id/imageview"
             android:layout_width="100dp"
             android:layout_height="100dp"
