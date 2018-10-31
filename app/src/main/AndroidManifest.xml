@@ -57,6 +57,15 @@
 
         <activity android:name=".SearchGroupActivity" />
         <activity android:name=".SearchGroupNumberActivity"></activity>
+        <activity android:name=".GroupChatActivity"></activity>
+            android:process=":remote" />
+        <activity android:name=".SetActivity"></activity>
+            android:process=":remote" />
+
+        <activity android:name=".GroupChatActivity"></activity>
+            android:process=":remote" />
+
+        <activity android:name=".SearchGroupActivity"></activity>
     </application>
 
 </manifest>
