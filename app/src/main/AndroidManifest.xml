@@ -55,6 +55,8 @@
             android:enabled="true"
             android:process=":remote" />
 
+        <activity android:name=".GroupChatActivity"></activity>
+            android:process=":remote" />
         <activity android:name=".SetActivity"></activity>
             android:process=":remote" />
 
