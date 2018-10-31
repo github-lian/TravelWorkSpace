@@ -11,25 +11,6 @@
         android:layout_margin="3dp"
         android:orientation="horizontal">
 
-        <!--<com.loopj.android.image.SmartImageView-->
-            <!--android:id="@+id/siv_icon"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:layout_marginRight="5dp"-->
-            <!--android:layout_marginTop="3dp"-->
-            <!--android:src="@drawable/book"-->
-            <!--android:background="@drawable/image_style">-->
-        <!--</com.loopj.android.image.SmartImageView>-->
-
-        <!--圆形头像
-        <com.example.lian.travel.MainActivity.CircleImageView-->
-            <!--android:id="@+id/img_circle"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginLeft="2dp"-->
-            <!--android:src="@drawable/book" />-->
-
         <ImageView
             android:id="@+id/img_circle"
             android:layout_width="60dp"
