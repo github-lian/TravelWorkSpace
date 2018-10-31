@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +35,7 @@ Tips：每天打开Android Studio第一件需要做的事--> pull同步代码 VC
 1.commit同步本地代码 编写修改信息 VCS --> Commit 快捷键 Ctrl + K  注意不要提交工作区文件！！只需勾选APP就行
 2.pull同步代码 VCS --> git --> pull
 3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
- */
+*/
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,OnMenuItemClickListener, OnMenuItemLongClickListener{
     private Typeface font;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         setContentView(R.layout.activity_main);
 
-        initView();//初始化组件啊啊
+        initView();//初始化组件
 
 
         SetIcon();  //设置文字图标
