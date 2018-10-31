@@ -1,4 +1,5 @@
 package com.example.lian.travel;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
