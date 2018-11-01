@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,18 +38,26 @@ public class GroupAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         View v=View.inflate(gContext,R.layout.list_item_search,null);
         GroupBean groupBean = groupBeanList.get(i);
         ImageView head= (ImageView) v.findViewById(R.id.img_circle);
         TextView item_title=(TextView)v.findViewById(R.id.item_title);
         TextView item_message=(TextView)v.findViewById(R.id.item_message);
         TextView tv_population=(TextView)v.findViewById(R.id.tv_population);
+        final Button btn_request_group=(Button)v.findViewById(R.id.btn_request_group);
 
         head.setImageResource(groupBean.getHead());
         item_title.setText(groupBean.getTitle());
         item_message.setText(groupBean.getMessage());
         tv_population.setText(groupBean.getPopulation());
+        btn_request_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_request_group.setText("审核中");
+            }
+        });
         return v;
     }
+
 }
