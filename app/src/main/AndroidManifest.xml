@@ -63,7 +63,8 @@
         <activity android:name=".PersonalInformationActivity" />
         <activity android:name=".GroupMemberActivity" />
         <activity android:name=".ModifyGroupInfoActivity" />
-        <activity android:name=".ModifyPersonalInfoActivity"></activity>
+        <activity android:name=".ModifyPersonalInfoActivity" />
+        <activity android:name=".CreateGroupActivity"></activity>
     </application>
 
 </manifest>
