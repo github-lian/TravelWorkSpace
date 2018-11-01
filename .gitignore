@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 .gradle
-/e
-/local.propertperties
-=======
-﻿.gradle
 /local.properties
->>>>>>> 820c4c4163b1cb0183417469d84b5a14159d8ebd
 .DS_Store # only needed under mac os
 /build
 /captures
