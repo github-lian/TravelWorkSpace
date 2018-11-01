@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.lian.travel">
-
     //获取设备网络状态，禁用后无法获取网络状态
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     //网络权限，当禁用后，无法进行检索等相关业务
@@ -44,12 +43,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapActivity"></activity>
-        <activity android:name=".GroupChatActivity"></activity>
-        <activity android:name=".SetActivity"></activity>
-        <activity android:name=".SearchGroupActivity"></activity>
-        <activity android:name=".AboutUsActivity"></activity>
-
+        <activity android:name=".MapActivity" />
+        <activity android:name=".GroupChatActivity" />
+        <activity android:name=".SetActivity" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".AboutUsActivity" />
         //百度地图key
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -59,6 +57,13 @@
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
+
+        <activity android:name=".GroupFeaturesActivity" />
+        <activity android:name=".DeleteGroupActivity" />
+        <activity android:name=".PersonalInformationActivity" />
+        <activity android:name=".GroupMemberActivity" />
+        <activity android:name=".ModifyGroupInfoActivity" />
+        <activity android:name=".ModifyPersonalInfoActivity"></activity>
     </application>
 
 </manifest>
