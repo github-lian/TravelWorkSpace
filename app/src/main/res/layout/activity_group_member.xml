@@ -19,7 +19,7 @@
             android:text="@string/icon_back"
             android:textSize="30sp"
             android:textColor="#fff" />
-        <!--  -->
+        <!-- ss -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="48dp"
