@@ -4,7 +4,33 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/backgroundcolor">
+<!--ss-->
+        <TextView
+            android:id="@+id/icon_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/icon_back"
+            android:textSize="30sp"
+            android:textColor="#fff" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:fontFamily="微软雅黑"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:text="修改群信息"
+            android:textColor="#fff" />
+    </RelativeLayout>
     <LinearLayout
         android:id="@+id/ll_1"
         android:layout_width="match_parent"
@@ -27,7 +53,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/shape"
-            android:text="更换头像"
+            android:text="选择群头像"
             android:textColor="#FFFFFF" />
     </LinearLayout>
     <LinearLayout

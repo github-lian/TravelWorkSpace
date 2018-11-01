@@ -6,6 +6,7 @@ import android.widget.ListView;
 
 import com.example.lian.travel.Adapter.SetAdapter;
 
+//设置界面
 public class SetActivity extends AppCompatActivity {
     private ListView set_listView;
 
