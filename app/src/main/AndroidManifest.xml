@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.lian.travel">
+
     //获取设备网络状态，禁用后无法获取网络状态
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     //网络权限，当禁用后，无法进行检索等相关业务
@@ -31,9 +32,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
@@ -43,38 +44,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".GroupChatActivity"></activity>
+        <activity android:name=".SetActivity"></activity>
+        <activity android:name=".SearchGroupActivity"></activity>
         <activity android:name=".AboutUsActivity"></activity>
 
+        //百度地图key
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="GWuUMTadHyDyATeMfslejubn1n9Nju3i" />
-
-        <activity android:name=".MapActivity" />
         //service组件，固定配置
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
-
-        <activity android:name=".GroupChatActivity" />
-        android:process=":remote" />
-        <activity android:name=".SetActivity" />
-        android:process=":remote" />
-        <activity android:name=".GroupChatActivity" />
-        android:process=":remote" />
-        <activity android:name=".SearchGroupActivity" />
-        <activity android:name=".RetrieveActivity"></activity>
-        <activity android:name=".SearchGroupActivity" />
-        <activity android:name=".SearchGroupNumberActivity"></activity>
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-        <activity android:name=".SetActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".SearchGroupActivity"></activity>
     </application>
 
 </manifest>

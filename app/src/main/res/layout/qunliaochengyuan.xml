@@ -3,6 +3,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/backgroundcolor">
+
+        <TextView
+            android:id="@+id/icon_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/icon_back"
+            android:textSize="30sp"
+            android:textColor="#fff" />
+<!--  -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:fontFamily="微软雅黑"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:text="群聊成员"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/icon_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/icon_add"
+            android:textSize="20sp"
+            android:textColor="#fff" />
+
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +68,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:gravity="center"
             android:textSize="20dp"
             android:layout_marginTop="20dp"
@@ -38,7 +77,7 @@
     </LinearLayout>
     <view
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:background="#666666"
         android:layout_marginTop="6dp"/>
     <LinearLayout
@@ -58,17 +97,17 @@
             android:id="@+id/tv_5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"
             android:textSize="20dp"
             android:textColor="#3B3B3B"
-            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
             android:text="成员1" />
 
         <Button
             android:id="@+id/tv_6"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_weight="3"
@@ -79,7 +118,7 @@
     </LinearLayout>
     <view
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:background="#666666"
         android:layout_marginTop="6dp"/>
     <Button
@@ -92,7 +131,7 @@
         android:textColor="#FFFFFF" />
     <view
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:background="#666666"
         android:layout_marginTop="10dp"/>
 </LinearLayout>
