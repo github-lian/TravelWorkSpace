@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AccountActivity">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/backgroundcolor">
+
+        <TextView
+            android:id="@+id/back_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/icon_back"
+            android:textSize="30sp"
+            android:textColor="#fff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:fontFamily="微软雅黑"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:text="账号管理"
+            android:textColor="#fff" />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/button_quit_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="退出当前账号"
+        android:textColor="#ffffff"
+        android:background="@drawable/button_layout"
+        android:layout_centerInParent="true"/>
+    <Button
+        android:id="@+id/button_quit_App"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:textStyle="bold"
+        android:text="退出App"
+        android:textColor="#ffffff"
+        android:background="@drawable/button_layout"
+        android:layout_alignTop="@+id/button_quit_account"
+        android:layout_marginTop="60dp"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_quit_account"
+        android:layout_marginBottom="100dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/logo"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:text="云游四方"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="35dp"
+                android:textColor="#0099ff"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
