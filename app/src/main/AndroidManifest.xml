@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.lian.travel">
-
     //获取设备网络状态，禁用后无法获取网络状态
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     //网络权限，当禁用后，无法进行检索等相关业务
@@ -44,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutUsActivity"></activity>
+        <activity android:name=".AboutUsActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -57,15 +56,15 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-        <activity android:name=".SetActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".GroupChatActivity"></activity>
-            android:process=":remote" />
-
-        <activity android:name=".SearchGroupActivity"></activity>
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SetActivity" />
+        android:process=":remote" />
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".AccountActivity" />
+        <activity android:name=".PhoneNumberActivity"></activity>
     </application>
 
 </manifest>
