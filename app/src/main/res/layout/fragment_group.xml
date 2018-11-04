@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lian.travel.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.example.lian.travel.MainActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title_bar"
@@ -18,22 +18,10 @@
             android:layout_height="48dp"
             android:layout_centerInParent="true"
             android:fontFamily="微软雅黑"
-            android:textSize="18sp"
             android:gravity="center"
-            android:text="消息"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/icon_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:text="@string/icon_add"
-            android:textSize="20sp"
-            android:textColor="#fff" />
-
+            android:text="群组"
+            android:textColor="#fff"
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
@@ -41,13 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srlAccentColor="#00000000"
-        app:srlPrimaryColor="#00000000"
-        app:srlEnablePreviewInEditMode="true">
+        app:srlEnablePreviewInEditMode="true"
+        app:srlPrimaryColor="#00000000">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

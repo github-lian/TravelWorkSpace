@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.lian.travel.AboutUsActivity;
+import com.example.lian.travel.AccountActivity;
 import com.example.lian.travel.ChangePasswordActivity;
 import com.example.lian.travel.PersonalInformationActivity;
 import com.example.lian.travel.R;
@@ -60,8 +61,8 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                 startActivity(i);
                 break;
             case R.id.mine_rl_setting:
-//                i = new Intent(getContext(), SetActivity.class);
-//                startActivity(i);
+                i = new Intent(getContext(), SetActivity.class);
+                startActivity(i);
                 break;
             case R.id.mine_rl_update:
                 i = new Intent(getContext(), PersonalInformationActivity.class);
@@ -69,6 +70,10 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.mine_rl_updatepsw:
                 i = new Intent(getContext(), ChangePasswordActivity.class);
+                startActivity(i);
+                break;
+            case R.id.more3:
+                i = new Intent(getContext(), AccountActivity.class);
                 startActivity(i);
                 break;
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,39 +17,40 @@
             android:layout_height="48dp"
             android:layout_centerInParent="true"
             android:fontFamily="微软雅黑"
-            android:textSize="18sp"
             android:gravity="center"
-            android:text="消息"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/icon_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:text="@string/icon_add"
-            android:textSize="20sp"
-            android:textColor="#fff" />
-
+            android:text="通知"
+            android:textColor="#fff"
+            android:textSize="18sp" />
     </RelativeLayout>
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="#E0E0E0"
+            android:text="验证消息" />
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="验证消息" />
-        <ListView
-            android:id="@+id/notice_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ListView>
+            app:srlAccentColor="#00000000"
+            app:srlEnablePreviewInEditMode="true"
+            app:srlPrimaryColor="#00000000">
+
+            <ListView
+                android:id="@+id/notice_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp" />
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
     </LinearLayout>
 
 </LinearLayout>

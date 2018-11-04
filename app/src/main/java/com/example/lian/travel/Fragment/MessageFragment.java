@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MessageFragment extends Fragment implements View.OnClickListener ,OnMenuItemClickListener, OnMenuItemLongClickListener {
+public class MessageFragment extends Fragment implements View.OnClickListener, OnMenuItemClickListener, OnMenuItemLongClickListener {
     private Typeface font;
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
@@ -53,6 +53,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
     private RefreshLayout mRefreshLayout;
 
     private ListView listView;
+    private MessageAdapter mAdapter;
     private List<MessageBean> datas = new ArrayList<MessageBean>();
 
     public MessageFragment() {
@@ -64,7 +65,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_message,container,false);
+        View view = inflater.inflate(R.layout.fragment_message, container, false);
         font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");//引用文字图标
 
         SetIcon(view);//设置文字图标
@@ -75,18 +76,20 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
         addData();
         //初始化
         mRefreshLayout = view.findViewById(R.id.refreshLayout);
-//设置 Header 为 Material风格
+        //设置 Header 为 Material风格
         mRefreshLayout.setRefreshHeader(new MaterialHeader(getActivity()).setShowBezierWave(true));
-//设置 Footer 为 球脉冲
+        //设置 Footer 为 球脉冲
         mRefreshLayout.setRefreshFooter(new BallPulseFooter(getActivity()).setSpinnerStyle(SpinnerStyle.Scale));
 
         //刷新
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
+                datas.add(new MessageBean(R.drawable.head, "实训小组3", "[emoji]", "2018-10-11"));
 //                mData.clear();
 //                mNameAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
+                mAdapter.notifyDataSetChanged();
             }
         });
         //加载更多
@@ -105,9 +108,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
     }
 
     //设置文字图标
-    private void SetIcon(View view){
-        TextView icon_back= view.findViewById(R.id.back);
-        TextView icon_add= view.findViewById(R.id.icon_add);
+    private void SetIcon(View view) {
+        TextView icon_back = view.findViewById(R.id.back);
+        TextView icon_add = view.findViewById(R.id.icon_add);
         icon_back.setTypeface(font);
 //        12333333335555
         icon_add.setTypeface(font);
@@ -118,10 +121,11 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
         icon_add.setOnClickListener(this);
     }
 
-    private void addData(){
-        datas.add(new MessageBean(R.drawable.head,"实训小组1","哈哈","2018-10-28"));
-        datas.add(new MessageBean(R.drawable.head,"实训小组1","哈哈","2018-10-28"));
-        listView.setAdapter(new MessageAdapter(getActivity(),datas));
+    private void addData() {
+        datas.add(new MessageBean(R.drawable.head, "实训小组1", "哈哈", "2018-10-28"));
+        datas.add(new MessageBean(R.drawable.head, "实训小组2", "[icon]", "2018-10-22"));
+        mAdapter = new MessageAdapter(getActivity(), datas);
+        listView.setAdapter(mAdapter);
     }
 
     //初始化右上角菜单
@@ -191,18 +195,16 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
 //    }
 
 
-
-
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.icon_add:
                 if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
                     mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
                 }
                 break;
             case R.id.back:
-                Intent i = new Intent(getContext(),MapActivity.class);
+                Intent i = new Intent(getContext(), MapActivity.class);
                 startActivity(i);
                 break;
         }
@@ -215,7 +217,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener ,O
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        Toast.makeText(getContext(),position+"",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), position + "", Toast.LENGTH_SHORT).show();
     }
     //右上角菜单点击事件
 //    @Override
