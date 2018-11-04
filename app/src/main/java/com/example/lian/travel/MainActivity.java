@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();//初始化组件
 
 
-        SetIcon();  //设置文字图标
+        //SetIcon();  //设置文字图标
 
         SetTabBar();  //设置底部导航栏
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //设置文字图标
     private void SetIcon(){
-        TextView icon_back= this.findViewById(R.id.icon_back);
+        TextView icon_back= this.findViewById(R.id.back);
         TextView icon_add= this.findViewById(R.id.icon_add);
         icon_back.setTypeface(font);
 //        12333333335555
@@ -163,16 +164,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //右上角菜单点击事件
     @Override
     public void onMenuItemClick(View clickedView, int position) {
+        Log.i("sss","ggg");
     switch (position){
         case 0:
 
             break;
         case 1:
-            Intent i = new Intent(MainActivity.this,SearchGroupNumberActivity.class);
+            Intent i = new Intent(getApplicationContext(),SearchGroupNumberActivity.class);
             startActivity(i);
             break;
         case 2:
-            Intent intent= new Intent(MainActivity.this,CreateGroupActivity.class);
+            Intent intent= new Intent(getBaseContext(),CreateGroupActivity.class);
             startActivity(intent);
             break;
     }
@@ -191,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
                 }
                 break;
-            case R.id.icon_back:
+            case R.id.back:
                 Intent i = new Intent(MainActivity.this,MapActivity.class);
                 startActivity(i);
                 break;

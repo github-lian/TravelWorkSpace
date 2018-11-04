@@ -1,23 +1,42 @@
 package com.example.lian.travel.Fragment;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lian.travel.Adapter.MessageAdapter;
 import com.example.lian.travel.Bean.MessageBean;
+import com.example.lian.travel.CreateGroupActivity;
+import com.example.lian.travel.MainActivity;
+import com.example.lian.travel.MapActivity;
 import com.example.lian.travel.R;
+import com.example.lian.travel.SearchGroupNumberActivity;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
+import com.yalantis.contextmenu.lib.MenuObject;
+import com.yalantis.contextmenu.lib.MenuParams;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -26,7 +45,11 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MessageFragment extends Fragment {
+public class MessageFragment extends Fragment implements View.OnClickListener ,OnMenuItemClickListener, OnMenuItemLongClickListener {
+    private Typeface font;
+    private FragmentManager fragmentManager;
+    private ContextMenuDialogFragment mMenuDialogFragment;
+
     private RefreshLayout mRefreshLayout;
 
     private ListView listView;
@@ -42,6 +65,11 @@ public class MessageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_message,container,false);
+        font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");//引用文字图标
+
+        SetIcon(view);//设置文字图标
+
+        initMenuFragment();  //初始化右上角菜单
 
         listView = (ListView) view.findViewById(R.id.list_view);
         addData();
@@ -76,10 +104,135 @@ public class MessageFragment extends Fragment {
         return view;
     }
 
+    //设置文字图标
+    private void SetIcon(View view){
+        TextView icon_back= view.findViewById(R.id.back);
+        TextView icon_add= view.findViewById(R.id.icon_add);
+        icon_back.setTypeface(font);
+//        12333333335555
+        icon_add.setTypeface(font);
+
+        fragmentManager = getActivity().getSupportFragmentManager();
+
+        icon_back.setOnClickListener(this);
+        icon_add.setOnClickListener(this);
+    }
+
     private void addData(){
         datas.add(new MessageBean(R.drawable.head,"实训小组1","哈哈","2018-10-28"));
         datas.add(new MessageBean(R.drawable.head,"实训小组1","哈哈","2018-10-28"));
         listView.setAdapter(new MessageAdapter(getActivity(),datas));
     }
 
+    //初始化右上角菜单
+    private void initMenuFragment() {
+        MenuParams menuParams = new MenuParams();
+        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+        menuParams.setMenuObjects(getMenuObjects());
+        menuParams.setClosableOutside(false);
+        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
+    }
+
+    //右上角菜单子项集合
+    private List<MenuObject> getMenuObjects() {
+        // You can use any [resource, bitmap, drawable, color] as image:
+        // item.setResource(...)
+        // item.setBitmap(...)
+        // item.setDrawable(...)
+        // item.setColor(...)
+        // You can set image ScaleType:
+        // item.setScaleType(ScaleType.FIT_XY)
+        // You can use any [resource, drawable, color] as background:
+        // item.setBgResource(...)
+        // item.setBgDrawable(...)
+        // item.setBgColor(...)
+        // You can use any [color] as text color:
+        // item.setTextColor(...)
+        // You can set any [color] as divider color:
+        // item.setDividerColor(...)
+
+        List<MenuObject> menuObjects = new ArrayList<>();
+
+        MenuObject close = new MenuObject();
+        close.setResource(R.drawable.menu_close);
+
+        MenuObject send = new MenuObject("搜索群聊");
+        send.setResource(R.drawable.menu_search);
+
+        MenuObject like = new MenuObject("创建群聊");
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.menu_add);
+        like.setBitmap(b);
+
+        MenuObject addFr = new MenuObject("Add to friends");
+        BitmapDrawable bd = new BitmapDrawable(getResources(),
+                BitmapFactory.decodeResource(getResources(), R.drawable.icn_3));
+        addFr.setDrawable(bd);
+
+        MenuObject addFav = new MenuObject("Add to favorites");
+        addFav.setResource(R.drawable.icn_4);
+
+        MenuObject block = new MenuObject("Block user");
+        block.setResource(R.drawable.icn_5);
+
+        menuObjects.add(close);
+        menuObjects.add(send);
+        menuObjects.add(like);
+//        menuObjects.add(addFr);
+//        menuObjects.add(addFav);
+//        menuObjects.add(block);
+        return menuObjects;
+    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(final Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+
+
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.icon_add:
+                if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
+                    mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
+                }
+                break;
+            case R.id.back:
+                Intent i = new Intent(getContext(),MapActivity.class);
+                startActivity(i);
+                break;
+        }
+    }
+
+    @Override
+    public void onMenuItemLongClick(View clickedView, int position) {
+
+    }
+
+    @Override
+    public void onMenuItemClick(View clickedView, int position) {
+        Toast.makeText(getContext(),position+"",Toast.LENGTH_SHORT).show();
+    }
+    //右上角菜单点击事件
+//    @Override
+//    public void onMenuItemClick(View clickedView, int position) {
+//        Toast.makeText(getContext(),position+"",Toast.LENGTH_SHORT).show();
+//        switch (position){
+//            case 0:
+//
+//                break;
+//            case 1:
+//                Intent i = new Intent(getContext(),SearchGroupNumberActivity.class);
+//                startActivity(i);
+//                break;
+//            case 2:
+//                Intent intent= new Intent(getContext(),CreateGroupActivity.class);
+//                startActivity(intent);
+//                break;
+//        }
+//    }
 }
