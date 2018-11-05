@@ -5,8 +5,8 @@
 
     <com.loopj.android.image.SmartImageView
         android:id="@+id/msg_pic"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:scaleType="centerCrop"
         android:layout_alignParentLeft="true"
         android:layout_margin="10dp"
@@ -36,7 +36,7 @@
         android:layout_marginTop="40dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:maxLength="5"
+        android:maxLength="10"
         android:text="desc" />
 
     <TextView

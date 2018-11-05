@@ -13,38 +13,24 @@
         android:layout_height="50dp"
         android:background="@color/backgroundcolor">
 
-        <TextView
-            android:id="@+id/mine_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:text="@string/icon_back"
-            android:textSize="30sp"
-            android:textColor="#fff" />
+            android:background="@drawable/img_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_centerInParent="true"
             android:fontFamily="微软雅黑"
-            android:textSize="18sp"
             android:gravity="center"
-            android:text="设 置"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/icon_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:text="@string/icon_add"
-            android:textSize="20sp"
-            android:textColor="#fff" />
-
+            android:text="设置"
+            android:textColor="#fff"
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <ListView
