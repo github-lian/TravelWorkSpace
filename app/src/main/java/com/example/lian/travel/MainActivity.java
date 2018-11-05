@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(i);
             break;
         case 2:
-            Intent intent= new Intent(getBaseContext(),CreateGroupActivity.class);
+            Intent intent= new Intent(getApplicationContext(),CreateGroupActivity.class);
             startActivity(intent);
             break;
     }
