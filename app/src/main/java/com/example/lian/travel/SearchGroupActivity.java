@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,13 +15,13 @@ import java.util.List;
 
 
 //搜索群聊界面
-public class SearchGroupResultActivity extends AppCompatActivity implements View.OnClickListener{
+public class SearchGroupActivity extends AppCompatActivity implements View.OnClickListener{
     private ListView gListView; //群组列表视图
     private List<GroupBean> gList;
     private GroupBean group;
     private GroupAdapter groupAdapter;
 
-    private ImageView back_to_search; //返回上一个页面
+    private TextView back_to_search; //返回上一个页面
 //    private Button request_group; //请求加群
 
     private int[] head={R.drawable.a,R.drawable.b,R.drawable.c};
@@ -32,7 +31,7 @@ public class SearchGroupResultActivity extends AppCompatActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_searched_group_result);
+        setContentView(R.layout.activity_searched_group);
 
         //初始化组件
         initView();
@@ -46,7 +45,7 @@ public class SearchGroupResultActivity extends AppCompatActivity implements View
         gList=new ArrayList<>();
         gListView=(ListView)findViewById(R.id.group_lv);
 
-        back_to_search=(ImageView)findViewById(R.id.back);
+        back_to_search=(TextView)findViewById(R.id.tv_back_to_search);
         back_to_search.setOnClickListener(this);
 
     }
@@ -64,17 +63,13 @@ public class SearchGroupResultActivity extends AppCompatActivity implements View
                 group = new GroupBean(head1, title1, message1, population1);
                 gList.add(group);
             }
-            groupAdapter = new GroupAdapter(SearchGroupResultActivity.this, gList);
+            groupAdapter = new GroupAdapter(SearchGroupActivity.this, gList);
             gListView.setAdapter(groupAdapter);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.back:
-                finish();
-                break;
-        }
-
+        Intent intent=new Intent(SearchGroupActivity.this,SearchGroupNumberActivity.class);
+        startActivity(intent);
     }
 }
