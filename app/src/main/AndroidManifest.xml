@@ -43,35 +43,41 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AboutUsActivity" />
+
+        <activity android:name=".MapActivity" />
+        <activity android:name=".GroupChatActivity" />
+        <activity android:name=".SetActivity" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".AboutUsActivity" />
         //百度地图key
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="GWuUMTadHyDyATeMfslejubn1n9Nju3i" />
 
+        <activity android:name=".MapActivity" />
         //service组件，固定配置
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".AboutUsActivity" />
-        <activity android:name=".AccountActivity" />
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".CreateGroupActivity"/>
-        <activity android:name=".DeleteGroupActivity" />
         <activity android:name=".GroupChatActivity" />
-        <activity android:name=".GroupFeaturesActivity" />
-        <activity android:name=".GroupMemberActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".ModifyGroupInfoActivity" />
-        <activity android:name=".PersonalInformationActivity" />
-        <activity android:name=".PhoneNumberActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".RetrieveActivity" />
-        <activity android:name=".SearchGroupNumberActivity" />
-        <activity android:name=".SearchGroupResultActivity" />
+        android:process=":remote" />
         <activity android:name=".SetActivity" />
+        android:process=":remote" />
+        <activity android:name=".GroupChatActivity" />
+        android:process=":remote" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".AccountActivity" />
+        <activity android:name=".PhoneNumberActivity"></activity>
+        <activity android:name=".GroupFeaturesActivity" />
+        <activity android:name=".DeleteGroupActivity" />
+        <activity android:name=".PersonalInformationActivity" />
+        <activity android:name=".GroupMemberActivity" />
+        <activity android:name=".ModifyGroupInfoActivity" />
+        <activity android:name=".ModifyPersonalInfoActivity" />
+        <activity android:name=".CreateGroupActivity"></activity>
     </application>
 
 </manifest>
