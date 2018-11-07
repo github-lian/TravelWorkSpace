@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import cn.smssdk.EventHandler;
@@ -19,7 +20,7 @@ import cn.smssdk.SMSSDK;
 
 public class RetrieveActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btn,btn1,btn2;
-    private EditText editText;
+    private EditText editText,phoneNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +29,7 @@ public class RetrieveActivity extends AppCompatActivity implements View.OnClickL
     }
     private void init(){
         editText=(EditText)findViewById(R.id.ed_reset_vc_code);
+        phoneNumber=(EditText)findViewById(R.id.ed_reset_nub);
 
         btn=(Button)findViewById(R.id.get_code);
         btn.setOnClickListener(this);
@@ -55,17 +57,17 @@ public class RetrieveActivity extends AppCompatActivity implements View.OnClickL
                         if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                             if (result == SMSSDK.RESULT_COMPLETE) {
                                 // TODO 处理成功得到验证码的结果
-                                // 请注意，此时只是完成了发送验证码的请求，验证码短信还需要几秒钟之后才送达
+                                Toast.makeText(getApplicationContext(), "验证码已发出", Toast.LENGTH_SHORT).show();
                             } else {
                                 // TODO 处理错误的结果
-                                ((Throwable) data).printStackTrace();
+                                Toast.makeText(getApplicationContext(), "验证码发送失败", Toast.LENGTH_SHORT).show();
                             }
                         } else if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                             if (result == SMSSDK.RESULT_COMPLETE) {
-                                // TODO 处理验证码验证通过的结果
+                                Toast.makeText(getApplicationContext(), "验证通过", Toast.LENGTH_SHORT).show();
                             } else {
                                 // TODO 处理错误的结果
-                                ((Throwable) data).printStackTrace();
+                                Toast.makeText(getApplicationContext(), "验证失败", Toast.LENGTH_SHORT).show();
                             }
                         }
                         // TODO 其他接口的返回结果也类似，根据event判断当前数据属于哪个接口
@@ -94,7 +96,7 @@ public class RetrieveActivity extends AppCompatActivity implements View.OnClickL
             case R.id.get_code:
                 btn.setVisibility(View.GONE);
                 btn1.setVisibility(View.VISIBLE);
-                SMSSDK.getVerificationCode("86", "15813418348");
+                SMSSDK.getVerificationCode("86", phoneNumber.getText().toString());
                 new CountDownTimer( 10 * 1000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
@@ -111,7 +113,7 @@ public class RetrieveActivity extends AppCompatActivity implements View.OnClickL
                 }.start();
                 break;
             case R.id.btn_reset:
-                SMSSDK.submitVerificationCode("86", "15813418348", editText.getText().toString());
+                SMSSDK.submitVerificationCode("86", phoneNumber.getText().toString(), editText.getText().toString());
                 break;
         }
     }
