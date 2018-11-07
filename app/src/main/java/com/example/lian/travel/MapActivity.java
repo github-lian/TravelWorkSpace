@@ -1,5 +1,9 @@
 package com.example.lian.travel;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,13 +19,16 @@ import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 import com.example.lian.travel.Bean.SharePositionBean;
 
@@ -42,6 +49,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     private List<SharePositionBean> position_data= new ArrayList<SharePositionBean>();
 
+    //初始化一个广播
+    private MyBroadcastReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,13 +59,21 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_map);
 
-        position_data.add(new SharePositionBean(40.963175, 116.400244,R.drawable.icon_mark1,"测试"));
-        position_data.add(new SharePositionBean(40.863175, 116.400244,R.drawable.icon_mark1,"测试"));
-        position_data.add(new SharePositionBean(40.763175, 116.400244,R.drawable.icon_mark1,"测试"));
-        position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.icon_mark1,"测试"));
+        position_data.add(new SharePositionBean(40.853175, 116.500244,R.drawable.position,"测试"));
+        position_data.add(new SharePositionBean(40.833175, 116.450244,R.drawable.position,"测试"));
+        position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.position,"测试"));
 
         initView();
         initMap();
+
+        //在onCreate()方法中注册广播
+        receiver = new MyBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        // 网络错误
+        filter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
+        // 效验key失败
+        filter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
+        registerReceiver(receiver, filter);
     }
 
 
@@ -76,12 +93,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             sharePosition(position_data.get(i).getLatitude(),
                     position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
         }
-
+//        LatLng myposition = new LatLng(40.863175,116.400244);
+//        drawCircle(myposition);
         //移动到自己位置
-        MapStatus.Builder builder = new MapStatus.Builder();
-        builder.target(new LatLng(40.863175,116.400244));
-        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-
+//        MapStatus.Builder builder = new MapStatus.Builder();
+//        builder.target(myposition);
+//        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
         //        //设定中心点坐标
 //        LatLng cenpt =  new LatLng(40.863175,116.400244);
 //        //定义地图状态
@@ -108,9 +125,54 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         initLocation();
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
         //开启定位
-//        mLocationClient.start();
+        mLocationClient.start();
         //图片点击事件，回到定位点
         mLocationClient.requestLocation();
+    }
+
+    // 绘制圆
+    private void drawCircle(LatLng position) {
+//        // 1.创建自己
+//        CircleOptions circleOptions = new CircleOptions();
+//        // 2.设置数据 以世界之窗为圆心，1000米为半径绘制
+//        circleOptions.center(position)//中心
+//                .radius(1000)  //半径
+//                .fillColor(0x6087CEEB)//填充圆的颜色
+//                .stroke(new Stroke(10, 0x6000BFFF));  //边框的宽度和颜色
+//        //把绘制的圆添加到百度地图上去
+//        mBaiduMap.addOverlay(circleOptions);
+
+        /**
+         * 绘制Marker，地图上常见的类似气球形状的图层
+         */
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                .fromResource(R.drawable.position);
+        MarkerOptions markerOptions = new MarkerOptions();//参数设置类
+        markerOptions.position(position);//marker坐标位置
+        markerOptions.icon(bitmap);//marker图标，可以自定义
+        markerOptions.draggable(false);//是否可拖拽，默认不可拖拽
+        markerOptions.anchor(0.5f, 1.0f);//设置 marker覆盖物与位置点的位置关系，默认（0.5f, 1.0f）水平居中，垂直下对齐
+        markerOptions.alpha(0.8f);//marker图标透明度，0~1.0，默认为1.0
+        markerOptions.animateType(MarkerOptions.MarkerAnimateType.drop);//marker出现的方式，从天上掉下
+        markerOptions.flat(false);//marker突变是否平贴地面
+        markerOptions.zIndex(1);//index
+        Marker mMarker = (Marker) mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
+    }
+
+    class MyBroadcastReceiver extends BroadcastReceiver {
+        //实现一个广播
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // 网络错误
+            if (action.equals(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR)) {
+                Log.i("map", "无法连接网络");
+                // key效验失败
+            } else if(action.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR)) {
+                Log.i("map", "key校验失败");
+            }
+        }
     }
 
     private void sharePosition(double latitude,double longitude ,int icon ,String title){
@@ -121,11 +183,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 .fromResource(icon);
         //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
-                .zIndex(9)  //设置Marker所在层级
+                .zIndex(1)  //设置Marker所在层级
                 .draggable(true)  //设置手势拖拽
                 .position(point)
                 .title(title)
                 .icon(bitmap);
+
         //在地图上添加Marker，并显示
         mBaiduMap.addOverlay(option);
     }
@@ -158,7 +221,10 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
         @Override
         public void onReceiveLocation(BDLocation location) {
+//            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            Log.i("position",latLng+"");
+            sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
             // 构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
@@ -168,7 +234,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             // 设置定位数据
             mBaiduMap.setMyLocationData(locData);
             // 当不需要定位图层时关闭定位图层
-            mBaiduMap.setMyLocationEnabled(false);
+//            mBaiduMap.setMyLocationEnabled(false);
             if (isFirstLoc) {
                 isFirstLoc = false;
                 LatLng ll = new LatLng(location.getLatitude(),
@@ -218,6 +284,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
+        //注意要在onDestroy()方法中销毁这个广播
+        unregisterReceiver(receiver);
     }
 
     @Override

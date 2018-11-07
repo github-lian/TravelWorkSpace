@@ -27,6 +27,9 @@ public class SearchGroupNumberActivity extends AppCompatActivity implements View
             case R.id.back:
                 finish();
                 break;
+            case R.id.btn_search:
+                startActivity(new Intent(SearchGroupNumberActivity.this,SearchGroupResultActivity.class));
+                break;
         }
     }
 }

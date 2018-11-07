@@ -74,6 +74,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/group_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -102,6 +103,7 @@
         android:layout_height="45dp">
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -112,12 +114,13 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/group_bulletin_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:maxLength="10"
-            android:text="好好学习，天天向上"
+            android:maxLength="5"
+            android:text="好好学习"
             android:textColor="#3B3B3B"
             android:textSize="16sp" />
 
@@ -151,6 +154,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/group_position_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -189,6 +193,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/group_type_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

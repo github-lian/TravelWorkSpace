@@ -1,195 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/backgroundcolor">
 
-        <TextView
+        <ImageView
             android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:text="@string/icon_back"
-            android:textSize="30sp"
-            android:textColor="#fff" />
+            android:background="@drawable/img_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_centerInParent="true"
             android:fontFamily="微软雅黑"
-            android:textSize="18sp"
             android:gravity="center"
             android:text="群功能"
-            android:textColor="#fff" />
+            android:textColor="#fff"
+            android:textSize="18sp" />
 
     </RelativeLayout>
+
     <LinearLayout
-        android:id="@+id/ll_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/qun"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_shixun"
+            android:id="@+id/group_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="60dp"
-            android:textSize="20sp"
             android:text="实训小组1"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
         <TextView
             android:id="@+id/num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
-            android:textSize="15sp"
+            android:layout_marginLeft="10dp"
             android:text="1234567890"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
     </LinearLayout>
-    <LinearLayout
+
+    <RelativeLayout
+        android:id="@+id/chat_more_people"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <TextView
-            android:id="@+id/tv_1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:layout_marginTop="20dp"
-            android:text="群聊成员" />
+        android:layout_height="45dp">
 
         <TextView
-            android:id="@+id/tv_2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20dp"
+            android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:text=">" />
-    </LinearLayout>
-    <view
+            android:text="群聊成员"
+            android:textColor="#3B3B3B"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/more" />
+    </RelativeLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#666666"
-        android:layout_marginTop="6dp"/>
-    <LinearLayout
+        android:layout_height="0.5dp"
+        android:background="#E5E5E5"></View>
+
+    <RelativeLayout
+        android:id="@+id/chat_more_update_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top">
-        <TextView
-            android:id="@+id/tv_3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:layout_marginTop="20dp"
-            android:text="修改群信息" />
+        android:layout_height="45dp">
 
         <TextView
-            android:id="@+id/tv_4"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20dp"
+            android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:text=">" />
-    </LinearLayout>
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#666666"
-        android:layout_marginTop="6dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top">
-        <TextView
-            android:id="@+id/tv_57"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:layout_marginTop="20dp"
-            android:text="图片共享" />
+            android:text="修改群信息"
+            android:textColor="#3B3B3B"
+            android:textSize="20sp" />
 
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/more" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E5E5E5"></View>
+
+    <RelativeLayout
+        android:id="@+id/chat_more_pic"
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
 
         <TextView
-            android:id="@+id/tv_6"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20dp"
+            android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:text=">" />
-    </LinearLayout>
-    <view
+            android:text="图片共享"
+            android:textColor="#3B3B3B"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/more" />
+    </RelativeLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#666666"
-        android:layout_marginTop="6dp"/>
-    <LinearLayout
+        android:layout_height="0.5dp"
+        android:background="#E5E5E5"></View>
+
+    <RelativeLayout
+        android:id="@+id/chat_more_vedio"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top">
+        android:layout_height="45dp">
+
         <TextView
-            android:id="@+id/tv_7"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20dp"
+            android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:text="视频共享" />
-        <!--  ss-->
-        <TextView
-            android:id="@+id/tv_8"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:layout_marginTop="20dp"
-            android:text=">" />
-    </LinearLayout>
-    <view
+            android:text="视频共享"
+            android:textColor="#3B3B3B"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/more" />
+    </RelativeLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#666666"
-        android:layout_marginTop="6dp"/>
+        android:layout_height="0.5dp"
+        android:background="#E5E5E5"></View>
+
     <Button
-        android:layout_width="120dp"
-        android:layout_height="40dp"
+        android:id="@+id/share_position_btn"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:background="@drawable/btshape"
         android:text="群位置共享"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
     <Button
-        android:layout_width="120dp"
-        android:layout_height="40dp"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:background="@drawable/shanchuqunliao"
+        android:background="@drawable/chat_sign_out"
         android:text="退出群聊"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 </LinearLayout>

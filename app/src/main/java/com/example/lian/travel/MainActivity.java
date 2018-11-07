@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     //设置文字图标
     private void SetIcon(){
         TextView icon_back= this.findViewById(R.id.back);
