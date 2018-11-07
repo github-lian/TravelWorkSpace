@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutUsActivity">
+    tools:context=".UpdateActivity">
 
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -28,7 +27,7 @@
             android:layout_centerInParent="true"
             android:fontFamily="微软雅黑"
             android:gravity="center"
-            android:text="关于我们"
+            android:text="版本更新"
             android:textColor="#fff"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -62,41 +61,26 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/button_update_1"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:background="@drawable/button_layout"
+        android:layout_marginBottom="10dp"
+        android:text="检查版本更新"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="    云游四方是一个基于“Google纵横”的应用思想、百度地图API的定位APP。" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:text="    其主要功能是，让用户知道在群聊中的其他用户的位置信息，方便用户在现实中找到其他的用户。" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
-            android:text="    编写人员：组长：练富珊，组员黄皓燊、黄成志、郑嘉蔚、辛伟达、陈碧容、郑瑞贤。" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="120dp"
-            android:text="    指导老师：吴绍根、罗佳" />
-
-
-    </RelativeLayout>
+    <Button
+        android:id="@+id/button_update_2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_update_1"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button_layout"
+        android:text="更新App"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
 
 </RelativeLayout>

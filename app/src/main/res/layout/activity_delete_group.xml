@@ -4,32 +4,66 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:id="@+id/ll_1"
+    <!--ss-->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#33ccff"
-        android:orientation="vertical">
-
-        <com.example.lian.travel.CircleImageView
-            android:id="@+id/imageview"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginLeft="50dp"
-            android:src="@drawable/kzd" />
-
+        android:layout_height="50dp"
+        android:background="@color/backgroundcolor">
         <TextView
-            android:id="@+id/xiaonanhai"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:fontFamily="微软雅黑"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:text="群功能"
+            android:textColor="#fff" />
+        <TextView
+            android:id="@+id/icon_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#666666"
-            android:layout_toRightOf="@id/imageview"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="40dp"
-            android:text="小男孩"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/icon_add"
+            android:textSize="20sp"
+            android:textColor="#fff" />
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/qun"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/shanchuqunliao"
+            android:text="删除群聊"
+            android:textColor="#FFFFFF" />
+        <TextView
+            android:id="@+id/tv_shixun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="40dp"
+            android:textSize="20sp"
+            android:text="实训小组1"
+            android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="15sp"
+            android:text="1234567890"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,33 +72,41 @@
             android:id="@+id/tv_1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:textSize="20dp"
             android:layout_marginTop="20dp"
-            android:text="群名称" />
+            android:text="群聊成员" />
 
         <TextView
             android:id="@+id/tv_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="center"
             android:textSize="20dp"
-            android:textColor="#3B3B3B"
             android:layout_marginTop="20dp"
-            android:text="修改个人信息" />
-
+            android:text=">" />
     </LinearLayout>
     <view
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:background="#666666"
         android:layout_marginTop="6dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top">
+        <TextView
+            android:id="@+id/tv_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"
+            android:text="修改群信息" />
+
         <TextView
             android:id="@+id/tv_4"
             android:layout_width="0dp"
@@ -73,23 +115,39 @@
             android:gravity="center"
             android:textSize="20dp"
             android:layout_marginTop="20dp"
-            android:text="群公告" />
-
+            android:text=">" />
+    </LinearLayout>
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#666666"
+        android:layout_marginTop="6dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top">
         <TextView
-            android:id="@+id/tv_5"
+            android:id="@+id/tv_57"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
             android:textSize="20dp"
-            android:textColor="#3B3B3B"
             android:layout_marginTop="20dp"
-            android:text="设置" />
-
+            android:text="图片共享" />
+        <TextView
+            android:id="@+id/tv_6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"
+            android:text=">" />
     </LinearLayout>
     <view
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:background="#666666"
         android:layout_marginTop="6dp"/>
     <LinearLayout
@@ -100,64 +158,41 @@
             android:id="@+id/tv_7"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:textSize="20dp"
             android:layout_marginTop="20dp"
-            android:text="地区" />
+            android:text="视频共享" />
 
         <TextView
             android:id="@+id/tv_8"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textColor="#3B3B3B"
-            android:layout_marginTop="20dp"
-            android:text="关于我们" />
-    </LinearLayout>
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#666666"
-        android:layout_marginTop="6dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top">
-        <TextView
-            android:id="@+id/tv_10"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="20dp"
             android:layout_marginTop="20dp"
-            android:text="群类型" />
-
-        <TextView
-            android:id="@+id/tv_11"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textColor="#3B3B3B"
-            android:layout_marginTop="20dp"
-            android:text="修改密码" />
+            android:text=">" />
     </LinearLayout>
     <view
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:background="#666666"
-        android:layout_marginTop="6dp"/>
+        android:layout_marginTop="2dp"/>
     <Button
         android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btshape"
+        android:text="群位置共享"
+        android:textColor="#FFFFFF" />
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:background="@drawable/shanchuqunliao"
-        android:text="注 销"
+        android:text="退出群聊"
         android:textColor="#FFFFFF" />
 </LinearLayout>

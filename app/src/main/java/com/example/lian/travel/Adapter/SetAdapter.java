@@ -1,6 +1,7 @@
 package com.example.lian.travel.Adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -36,11 +37,12 @@ public class SetAdapter extends BaseAdapter {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            View v=View.inflate(context, R.layout.list_set_layout,null);
+            view = LayoutInflater.from(context).inflate(R.layout.list_set_layout,
+                    null);
             TextView textView=(TextView)view.findViewById(R.id.set_listView_textView);
             textView.setText(text[i]);
             ImageView imageView=(ImageView)view.findViewById(R.id.set_listView_imageView);
             imageView.setBackgroundResource(icons[i]);
-            return v;
+            return view;
         }
     }

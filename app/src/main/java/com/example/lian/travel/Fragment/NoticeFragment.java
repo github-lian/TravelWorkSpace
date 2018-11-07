@@ -27,6 +27,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scwang.smartrefresh.header.MaterialHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -44,6 +50,7 @@ public class NoticeFragment extends Fragment implements View.OnClickListener{
     private ContextMenuDialogFragment mMenuDialogFragment;
     private ListView listView;
 
+    private RefreshLayout mRefreshLayout;
     private List<NoticeBean> datas = new ArrayList<NoticeBean>();
     public NoticeFragment() {
         // Required empty public constructor
@@ -56,6 +63,35 @@ public class NoticeFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_notice,container,false);
         listView = (ListView) view.findViewById(R.id.notice_listview);
         addData();
+
+        //初始化
+        mRefreshLayout = view.findViewById(R.id.refreshLayout);
+        //设置 Header 为 Material风格
+        mRefreshLayout.setRefreshHeader(new MaterialHeader(getActivity()).setShowBezierWave(true));
+        //设置 Footer 为 球脉冲
+        mRefreshLayout.setRefreshFooter(new BallPulseFooter(getActivity()).setSpinnerStyle(SpinnerStyle.Scale));
+
+        //刷新
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+//                mData.clear();
+//                mNameAdapter.notifyDataSetChanged();
+                refreshlayout.finishRefresh();
+            }
+        });
+        //加载更多
+        mRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+//                for(int i=0;i<30;i++){
+//                    mData.add("小明"+i);
+//                }
+//                mNameAdapter.notifyDataSetChanged();
+                refreshlayout.finishLoadmore();
+            }
+        });
+
 //        initMenuFragment();
 //        fragmentManager = view.getSupportFragmentManager();
 //        initToolbar();

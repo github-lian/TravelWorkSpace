@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-public class AboutUsActivity extends AppCompatActivity implements View.OnClickListener{
+public class PersonalInformationActivity extends AppCompatActivity implements View.OnClickListener{
     private ImageView back;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_us);
+        setContentView(R.layout.activity_personal_information);
 
         back = this.findViewById(R.id.back);
         back.setOnClickListener(this);

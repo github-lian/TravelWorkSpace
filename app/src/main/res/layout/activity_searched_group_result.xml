@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -10,34 +10,32 @@
         android:layout_height="50dp"
         android:background="@color/backgroundcolor">
 
-        <TextView
-            android:id="@+id/icon_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:text="@string/icon_back"
-            android:textSize="30sp"
-            android:textColor="#fff" />
+            android:background="@drawable/img_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_centerInParent="true"
             android:fontFamily="微软雅黑"
-            android:textSize="18sp"
             android:gravity="center"
-            android:text="查看结果"
-            android:textColor="#fff" />
+            android:text="搜索结果"
+            android:textColor="#fff"
+            android:textSize="18sp" />
     </RelativeLayout>
 
 
     <ListView
-        android:layout_below="@+id/title_bar"
         android:id="@+id/group_lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
         android:divider="#dcdcdc"
         android:dividerHeight="2dp" />
 </LinearLayout>
