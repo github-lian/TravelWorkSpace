@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.lian.travel">
+    package="com.example.lian.travel"
+    android:installLocation="preferExternal">
     //获取设备网络状态，禁用后无法获取网络状态
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     //网络权限，当禁用后，无法进行检索等相关业务
@@ -28,8 +29,31 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
+        android:name=".Util.MapApplication"
         android:allowBackup="true"
         android:icon="@drawable/app"
         android:label="@string/app_name"
@@ -53,10 +77,31 @@
             android:enabled="true"
             android:process=":remote" />
 
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="1120181105244723#travel" />
+        <!-- 声明SDK所需的service SDK核心功能 -->
+        <service
+            android:name="com.hyphenate.chat.EMChatService"
+            android:exported="true" />
+        <!-- 声明SDK所需的receiver -->
+        <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+            <!-- 可选filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".AboutUsActivity" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".CreateGroupActivity"/>
+        <activity android:name=".CreateGroupActivity" />
         <activity android:name=".DeleteGroupActivity" />
         <activity android:name=".GroupMemberActivity" />
         <activity android:name=".GroupChatActivity" />
@@ -65,13 +110,14 @@
         <activity android:name=".MapActivity" />
         <activity android:name=".ModifyGroupInfoActivity" />
         <activity android:name=".PersonalInformationActivity" />
-        <activity android:name=".PhoneNumberActivity"></activity>
-        <activity android:name=".RegisterActivity"></activity>
-        <activity android:name=".RetrieveActivity"></activity>
+        <activity android:name=".PhoneNumberActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RetrieveActivity" />
         <activity android:name=".SetActivity" />
         <activity android:name=".SearchGroupResultActivity" />
         <activity android:name=".SearchGroupNumberActivity" />
-
+        <activity android:name=".FullImageActivity" />
+        <activity android:name=".ChatActivity" />
     </application>
 
 </manifest>
