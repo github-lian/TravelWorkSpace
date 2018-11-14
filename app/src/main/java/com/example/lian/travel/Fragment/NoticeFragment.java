@@ -111,7 +111,8 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
     private void addData() {
         datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组1", "嘻嘻", "处理人：小a"));
         datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组1", "移除a", "处理人：小a"));
-        listView.setAdapter(new NoticeAdapter(getActivity(), datas));
+        NoticeAdapter noticeAdapter=new NoticeAdapter(getActivity(), datas);
+        listView.setAdapter(noticeAdapter);
     }
 
     private void getNotice(){
