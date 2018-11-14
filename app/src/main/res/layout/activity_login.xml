@@ -60,6 +60,8 @@
             android:layout_height="wrap_content"
             android:hint="请输入验证码"
             android:gravity="center"
+            android:singleLine="true"
+            android:imeOptions="actionGo"
             android:textColorHint="#FFF"
             android:background="@drawable/editsharp" />
         <ImageView

@@ -60,7 +60,7 @@
         android:roundIcon="@drawable/app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -97,7 +97,6 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-
         <activity android:name=".AboutUsActivity" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".ChangePasswordActivity" />
@@ -106,7 +105,7 @@
         <activity android:name=".GroupMemberActivity" />
         <activity android:name=".GroupChatActivity" />
         <activity android:name=".GroupFeaturesActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".ModifyGroupInfoActivity" />
         <activity android:name=".PersonalInformationActivity" />

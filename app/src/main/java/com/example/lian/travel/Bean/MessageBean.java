@@ -1,16 +1,26 @@
 package com.example.lian.travel.Bean;
 
 public class MessageBean {
+    private String id;//群组id
     private int head_portrait;//头像
     private String group_name;//组名
     private String sort_msg;//简略消息
     private String time;//时间
 
-    public MessageBean(int head_portrait, String group_name, String sort_msg, String time) {
+    public MessageBean(String id, int head_portrait, String group_name, String sort_msg, String time) {
+        this.id = id;
         this.head_portrait = head_portrait;
         this.group_name = group_name;
         this.sort_msg = sort_msg;
         this.time = time;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getHead_portrait() {

@@ -225,6 +225,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
             Log.i("position",latLng+"");
             sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
+            sharePosition(location.getLatitude()-0.003, location.getLongitude()-0.004,R.drawable.position,"测试");
+            sharePosition(location.getLatitude()+0.005, location.getLongitude()+0.002,R.drawable.position,"测试");
             // 构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
@@ -243,7 +245,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 builder.target(ll).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                 Log.i("position",location.getLatitude()+ "," + location.getLongitude());
-                Log.i("position",location.getAddrStr());
                 if (location.getLocType() == BDLocation.TypeGpsLocation) {
                     // GPS定位结果
 

@@ -2,12 +2,17 @@ package com.example.lian.travel.Fragment;
 
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -34,6 +39,10 @@ import com.example.lian.travel.SearchGroupNumberActivity;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.chat.EMGroupOptions;
+import com.hyphenate.exceptions.HyphenateException;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
@@ -48,6 +57,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,13 +74,38 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
     private MessageAdapter mAdapter;
     private List<MessageBean> datas = new ArrayList<MessageBean>();
 
-    // 弹出框
-    private ProgressDialog mDialog;
     private int SignPosition=0;
     public MessageFragment() {
         // Required empty public constructor
     }
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {//传递并执行耗时的操作
+            switch (msg.what) {
+                case 0:
+                    if (!datas.equals(null)&&!datas.isEmpty())
+                    datas.clear();
+                    //从本地加载群组列表
+                    List<EMGroup> grouplist = EMClient.getInstance().groupManager().getAllGroups();
+                    for (int i = 0; i < grouplist.size(); i++) {
+                        Log.i("ss", grouplist.get(i).getGroupId() + "---" + grouplist.get(i).getGroupName() +
+                                grouplist.get(i).getDescription() + "---" + grouplist.get(i).getOwner());
+                        datas.add(new MessageBean(grouplist.get(i).getGroupId(),R.drawable.head, grouplist.get(i).getGroupName() , grouplist.get(i).getDescription(), "2018-10-22"));
+                    }
+                    Collections.reverse(datas);
+                    mAdapter = new MessageAdapter(getActivity(), datas);
+                    listView.setAdapter(mAdapter);
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getGroupFromService();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,8 +118,12 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
 
         initMenuFragment();  //初始化右上角菜单
 
+        IntentFilter filter = new IntentFilter(CreateGroupActivity.action);//注册广播
+        getActivity().registerReceiver(broadcastReceiver, filter);
+
         listView = (ListView) view.findViewById(R.id.list_view);
-        addData();
+
+//        addData();
         listView.setOnItemClickListener(this);
         //初始化
         mRefreshLayout = view.findViewById(R.id.refreshLayout);
@@ -97,10 +136,12 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                datas.add(new MessageBean(R.drawable.head, "实训小组3", "[emoji]", "2018-10-11"));
+                getGroupFromService();
+                handler.sendEmptyMessage(0);
 //                mData.clear();
 //                mNameAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
+                Toast.makeText(getActivity(), "刷新成功!", Toast.LENGTH_LONG).show();
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -134,8 +175,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
     }
 
     private void addData() {
-        datas.add(new MessageBean(R.drawable.head, "实训小组1", "哈哈", "2018-10-28"));
-        datas.add(new MessageBean(R.drawable.head, "实训小组2", "[icon]", "2018-10-22"));
         mAdapter = new MessageAdapter(getActivity(), datas);
         listView.setAdapter(mAdapter);
     }
@@ -205,6 +244,56 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
 //        inflater.inflate(R.menu.menu_main, menu);
 //        return true;
 //    }
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String sign = intent.getStringExtra("sign");
+        Log.i("ss","sign00==>"+sign);
+        switch (sign){
+            case "CreateGroupActivity":
+                getGroupFromService();
+                Log.i("ss","sign==>"+sign);
+                break;
+        }
+        // TODO Auto-generated method stub
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    private void getGroupFromService(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    //从服务器获取自己加入的和创建的群组列表，此api获取的群组sdk会自动保存到内存和db。
+                    final List<EMGroup> grouplist1 = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();//需异步处理
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Log.i("ss","get service group seeccful");
+                            handler.sendEmptyMessage(0);
+//                            setResult(RESULT_OK);
+//                            finish();
+                        }
+                    });
+                } catch (final HyphenateException e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+            }
+        }).start();
+    }
 
 
     @Override
@@ -226,109 +315,14 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         SignPosition = position;
         Log.i("list",position+" "+datas.get(position).getGroup_name());
-        signIn();
+        // 登录成功跳转界面
+        Intent intent = new Intent(getContext(), ChatActivity.class);
+        intent.putExtra("group_id",datas.get(SignPosition).getId());
+        intent.putExtra("group_name",datas.get(SignPosition).getGroup_name());
+        intent.putExtra("ec_chat_id","ll");
+        startActivity(intent);
     }
 
-    /**
-     * 登录方法
-     */
-    private void signIn() {
-        mDialog = new ProgressDialog(getContext());
-        mDialog.setMessage("正在登陆，请稍后...");
-        mDialog.show();
-        String username = "lfs";
-        String password = "123456";
-        EMClient.getInstance().login(username, password, new EMCallBack() {
-            /**
-             * 登陆成功的回调
-             */
-            @Override
-            public void onSuccess() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDialog.dismiss();
-                        Log.i("login","登陆成功");
-                        // 加载所有会话到内存
-                        EMClient.getInstance().chatManager().loadAllConversations();
-                        // 加载所有群组到内存，如果使用了群组的话
-                        // EMClient.getInstance().groupManager().loadAllGroups();
 
-                        // 登录成功跳转界面
-                        Intent intent = new Intent(getContext(), ChatActivity.class);
-                        intent.putExtra("group_name",datas.get(SignPosition).getGroup_name());
-                        intent.putExtra("ec_chat_id","ll");
-                        startActivity(intent);
-                    }
-                });
-            }
-
-            /**
-             * 登陆错误的回调
-             * @param i
-             * @param s
-             */
-            @Override
-            public void onError(final int i, final String s) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDialog.dismiss();
-                        Log.d("lzan13", "登录失败 Error code:" + i + ", message:" + s);
-                        /**
-                         * 关于错误码可以参考官方api详细说明
-                         * http://www.easemob.com/apidoc/android/chat3.0/classcom_1_1hyphenate_1_1_e_m_error.html
-                         */
-                        switch (i) {
-                            // 网络异常 2
-                            case EMError.NETWORK_ERROR:
-                                Toast.makeText(getActivity(), "网络错误 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 无效的用户名 101
-                            case EMError.INVALID_USER_NAME:
-                                Toast.makeText(getActivity(), "无效的用户名 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 无效的密码 102
-                            case EMError.INVALID_PASSWORD:
-                                Toast.makeText(getActivity(), "无效的密码 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 用户认证失败，用户名或密码错误 202
-                            case EMError.USER_AUTHENTICATION_FAILED:
-                                Toast.makeText(getActivity(), "用户认证失败，用户名或密码错误 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 用户不存在 204
-                            case EMError.USER_NOT_FOUND:
-                                Toast.makeText(getActivity(), "用户不存在 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 无法访问到服务器 300
-                            case EMError.SERVER_NOT_REACHABLE:
-                                Toast.makeText(getActivity(), "无法访问到服务器 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 等待服务器响应超时 301
-                            case EMError.SERVER_TIMEOUT:
-                                Toast.makeText(getActivity(), "等待服务器响应超时 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 服务器繁忙 302
-                            case EMError.SERVER_BUSY:
-                                Toast.makeText(getActivity(), "服务器繁忙 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 未知 Server 异常 303 一般断网会出现这个错误
-                            case EMError.SERVER_UNKNOWN_ERROR:
-                                Toast.makeText(getActivity(), "未知的服务器异常 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            default:
-                                Toast.makeText(getActivity(), "ml_sign_in_failed code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
-    }
 
 }

@@ -91,7 +91,7 @@ public class MapApplication extends Application {
         // 设置Appkey，如果配置文件已经配置，这里可以不用设置
         // options.setAppKey("guaju");
         // 设置自动登录
-        options.setAutoLogin(true);
+        options.setAutoLogin(false);
         // 设置是否需要发送已读回执
         options.setRequireAck(true);
         // 设置是否需要发送回执，TODO 这个暂时有bug，上层收不到发送回执

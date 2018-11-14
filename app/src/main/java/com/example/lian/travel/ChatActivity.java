@@ -34,8 +34,12 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.exceptions.HyphenateException;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 
 
@@ -50,11 +54,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * 作者：Rance on 2016/11/29 10:47
- * 邮箱：rance935@163.com
- */
-public class ChatActivity extends AppCompatActivity{
+
+public class ChatActivity extends AppCompatActivity {
 
     @Bind(R.id.chat_list)
     EasyRecyclerView chatList;
@@ -95,6 +96,8 @@ public class ChatActivity extends AppCompatActivity{
     private ImageView animView;
     // 当前聊天的 ID
     private String mChatId;
+    // 当前群聊天的 ID
+    private String mChatGroupId;
     // 当前会话对象
     private EMConversation mConversation;
 
@@ -106,6 +109,7 @@ public class ChatActivity extends AppCompatActivity{
 
         // 获取当前会话的username(如果是群聊就是群id)
         mChatId = getIntent().getStringExtra("ec_chat_id");
+        mChatGroupId = getIntent().getStringExtra("group_id");
 
 //        EMClient.getInstance().chatManager().addMessageListener(msgListener);//消息监听器
 
@@ -114,6 +118,7 @@ public class ChatActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
 
+
         TextView chat_group_name = this.findViewById(R.id.chat_group_name);
         chat_group_name.setText(getIntent().getStringExtra("group_name"));
         initWidget();
@@ -121,14 +126,14 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     @OnClick(R.id.back)
-    public void setBack(){
+    public void setBack() {
         finish();
     }
 
     @OnClick(R.id.group_more)
-    public void setGroup_more(){
-        Intent intent = new Intent(ChatActivity.this,GroupFeaturesActivity.class);
-        intent.putExtra("group_name",getIntent().getStringExtra("group_name"));
+    public void setGroup_more() {
+        Intent intent = new Intent(ChatActivity.this, GroupFeaturesActivity.class);
+        intent.putExtra("group_name", getIntent().getStringExtra("group_name"));
         startActivity(intent);
     }
 
@@ -278,7 +283,7 @@ public class ChatActivity extends AppCompatActivity{
         messageInfo.setHeader("http://img.dongqiudi.com/uploads/avatar/2014/10/20/8MCTb0WBFG_thumb_1413805282863.jpg");
         messageInfo.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
         messageInfo.setSendState(Constants.CHAT_ITEM_SENDING);
-        Log.i("ttt",messageInfo+"");
+        Log.i("ttt", messageInfo + "");
         sendTextMsg(messageInfo.getContent());
         messageInfos.add(messageInfo);
         chatAdapter.add(messageInfo);
@@ -291,9 +296,10 @@ public class ChatActivity extends AppCompatActivity{
         }, 1000);
     }
 
-    private void sendTextMsg(String content){
+    private void sendTextMsg(String content) {
         // 创建一条新消息，第一个参数为消息内容，第二个为接受者username
-        EMMessage message = EMMessage.createTxtSendMessage(content, mChatId);
+        EMMessage message = EMMessage.createTxtSendMessage(content, mChatGroupId);
+        message.setChatType(EMMessage.ChatType.GroupChat);
 
         // 调用发送消息的方法
         EMClient.getInstance().chatManager().sendMessage(message);
@@ -342,7 +348,7 @@ public class ChatActivity extends AppCompatActivity{
             switch (msg.what) {
                 case 0:
                     EMMessage message = (EMMessage) msg.obj;
-                    Log.i("ttt","message:"+message);
+                    Log.i("ttt", "message:" + message);
                     // 这里只是简单的demo，也只是测试文字消息的收发，所以直接将body转为EMTextMessageBody去获取内容
                     EMTextMessageBody body = (EMTextMessageBody) message.getBody();
                     MessageInfo messagess = new MessageInfo();
@@ -351,9 +357,13 @@ public class ChatActivity extends AppCompatActivity{
                     messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");
                     messageInfos.add(messagess);
                     chatAdapter.add(messagess);
-                    chatList.scrollToPosition(chatAdapter.getCount() - 1);
+                    int i = chatAdapter.getCount();
+                    String s = String.valueOf(i);
+                    if (s != null && !s.isEmpty()) {
+                        chatList.scrollToPosition(chatAdapter.getCount() - 1);
+                    }
                     chatAdapter.notifyDataSetChanged();
-                    Log.i("ttt","body:"+body);
+                    Log.i("ttt", "body:" + body);
                     // 将新的消息内容和时间加入到下边
                     break;
             }
@@ -370,7 +380,7 @@ public class ChatActivity extends AppCompatActivity{
          * 第二个是绘画类型可以为空
          * 第三个表示如果会话不存在是否创建
          */
-        mConversation = EMClient.getInstance().chatManager().getConversation(mChatId, null, true);
+        mConversation = EMClient.getInstance().chatManager().getConversation(mChatGroupId, null, true);
         // 设置当前会话未读数为 0
         mConversation.markAllMessagesAsRead();
         int count = mConversation.getAllMessages().size();
@@ -401,8 +411,8 @@ public class ChatActivity extends AppCompatActivity{
 
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
-            Log.i("ttt","收到消息了");
-            Log.i("ttt","消息:"+messages);
+            Log.i("ttt", "收到消息了");
+            Log.i("ttt", "消息:" + messages);
             // 循环遍历当前收到的消息
             for (EMMessage message : messages) {
                 if (message.getFrom().equals(mChatId)) {
@@ -435,6 +445,7 @@ public class ChatActivity extends AppCompatActivity{
         public void onMessageDelivered(List<EMMessage> message) {
             //收到已送达回执
         }
+
         @Override
         public void onMessageRecalled(List<EMMessage> messages) {
             //消息被撤回
@@ -454,10 +465,12 @@ public class ChatActivity extends AppCompatActivity{
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
 
-//    @Override
+    //    @Override
 //    protected void onStop() {
 //        super.onStop();
 //        // 移除消息监听
 //        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
 //    }
+
+
 }

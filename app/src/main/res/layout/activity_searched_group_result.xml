@@ -23,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_centerInParent="true"
-            android:fontFamily="微软雅黑"
             android:gravity="center"
             android:text="搜索结果"
             android:textColor="#fff"
@@ -34,8 +33,7 @@
     <ListView
         android:id="@+id/group_lv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar"
+        android:layout_height="match_parent"
         android:divider="#dcdcdc"
         android:dividerHeight="2dp" />
 </LinearLayout>
