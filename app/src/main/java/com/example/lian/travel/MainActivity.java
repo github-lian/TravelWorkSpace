@@ -19,6 +19,7 @@ import com.example.lian.travel.Fragment.GroupFragment;
 import com.example.lian.travel.Fragment.MessageFragment;
 import com.example.lian.travel.Fragment.MineFragment;
 import com.example.lian.travel.Fragment.NoticeFragment;
+import com.example.lian.travel.Util.PermisionUtils;
 import com.hjm.bottomtabbar.BottomTabBar;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
@@ -55,8 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");//引用文字图标
         setContentView(R.layout.activity_main);
+        //检测读写权限
+        PermisionUtils.verifyStoragePermissions(MainActivity.this);
 
-        initView();//初始化组件
+        //initView();//初始化组件
 
 
         //SetIcon();  //设置文字图标

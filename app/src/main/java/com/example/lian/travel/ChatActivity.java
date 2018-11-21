@@ -32,12 +32,15 @@ import com.example.lian.travel.widget.NoScrollViewPager;
 import com.example.lian.travel.widget.StateButton;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
 import com.jude.easyrecyclerview.EasyRecyclerView;
@@ -46,6 +49,9 @@ import com.jude.easyrecyclerview.EasyRecyclerView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,20 +129,29 @@ public class ChatActivity extends AppCompatActivity {
         chat_group_name.setText(getIntent().getStringExtra("group_name"));
         initWidget();
         initConversation();
+//        sendPosition();
+
+        getPositon();
     }
 
     @OnClick(R.id.back)
     public void setBack() {
-        finish();
+        Log.i("count","finish==>"+chatAdapter.getCount());
+        Intent i = new Intent(ChatActivity.this,MainActivity.class);
+        startActivity(i);
     }
 
     @OnClick(R.id.group_more)
     public void setGroup_more() {
         Intent intent = new Intent(ChatActivity.this, GroupFeaturesActivity.class);
         intent.putExtra("group_name", getIntent().getStringExtra("group_name"));
+        intent.putExtra("group_id", getIntent().getStringExtra("group_id"));
         startActivity(intent);
     }
 
+    private void getPositon(){
+
+    }
 
     private void initWidget() {
         fragments = new ArrayList<>();
@@ -192,7 +207,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         chatAdapter.addItemClickListener(itemClickListener);
-        LoadData();
+        messageInfos = new ArrayList<>();
+//        LoadData();
     }
 
     /**
@@ -201,6 +217,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatAdapter.onItemClickListener itemClickListener = new ChatAdapter.onItemClickListener() {
         @Override
         public void onHeaderClick(int position) {
+            //sendPosition();
             Toast.makeText(ChatActivity.this, "onHeaderClick", Toast.LENGTH_SHORT).show();
         }
 
@@ -252,7 +269,6 @@ public class ChatActivity extends AppCompatActivity {
      * 构造聊天数据
      */
     private void LoadData() {
-        messageInfos = new ArrayList<>();
 
         MessageInfo messageInfo1 = new MessageInfo();
         messageInfo1.setFilepath("http://www.trueme.net/bb_midi/welcome.wav");
@@ -280,7 +296,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void MessageEventBus(final MessageInfo messageInfo) {
-        messageInfo.setHeader("http://img.dongqiudi.com/uploads/avatar/2014/10/20/8MCTb0WBFG_thumb_1413805282863.jpg");
+        messageInfo.setHeader("http://image.biaobaiju.com/uploads/20180802/00/1533142727-qTtYHaAgjy.jpg");
         messageInfo.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
         messageInfo.setSendState(Constants.CHAT_ITEM_SENDING);
         Log.i("ttt", messageInfo + "");
@@ -294,6 +310,45 @@ public class ChatActivity extends AppCompatActivity {
                 chatAdapter.notifyDataSetChanged();
             }
         }, 1000);
+    }
+
+    private void sendPosition(){
+        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+// 如果是群聊，设置chattype，默认是单聊
+        cmdMsg.setChatType(EMMessage.ChatType.GroupChat);
+        String action="shareLocation";  // 当前cmd消息的关键字
+        EMCmdMessageBody cmdBody=new EMCmdMessageBody(action);
+// 设置消息body
+        cmdMsg.addBody(cmdBody);
+// 设置要发给谁，用户username或者群聊groupid
+        cmdMsg.setTo(mChatGroupId);
+// 通过扩展字段设置坐标位置（参数可以自定义，但要求与ios保持一致）
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("latitude", "38.6518");
+            jsonObject.put("longitude", "104.07642");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        cmdMsg.setAttribute("coordinate",jsonObject.toString());
+        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
+        cmdMsg.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                Log.i("ttt", "发送穿透消息成功");
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                Log.i("ttt", "发送穿透消息失败");
+            }
+        });
     }
 
     private void sendTextMsg(String content) {
@@ -357,12 +412,14 @@ public class ChatActivity extends AppCompatActivity {
                     messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");
                     messageInfos.add(messagess);
                     chatAdapter.add(messagess);
-                    int i = chatAdapter.getCount();
-                    String s = String.valueOf(i);
-                    if (s != null && !s.isEmpty()) {
-                        chatList.scrollToPosition(chatAdapter.getCount() - 1);
-                    }
+//                    int i = chatAdapter.getCount();
+//                    String s = String.valueOf(i);
+//                    if (s != null && !s.isEmpty()) {
+//                        chatList.scrollToPosition(chatAdapter.getCount() - 1);
+//                    }
+                    Log.i("count",chatAdapter.getCount()+"foot "+chatAdapter.getFooterCount()+"head"+chatAdapter.getHeaderCount());
                     chatAdapter.notifyDataSetChanged();
+                    chatList.scrollToPosition(chatAdapter.getCount() - 1);
                     Log.i("ttt", "body:" + body);
                     // 将新的消息内容和时间加入到下边
                     break;
@@ -415,7 +472,6 @@ public class ChatActivity extends AppCompatActivity {
             Log.i("ttt", "消息:" + messages);
             // 循环遍历当前收到的消息
             for (EMMessage message : messages) {
-                if (message.getFrom().equals(mChatId)) {
                     // 设置消息为已读
                     mConversation.markMessageAsRead(message.getMsgId());
 
@@ -424,9 +480,6 @@ public class ChatActivity extends AppCompatActivity {
                     msg.what = 0;
                     msg.obj = message;
                     mHandler.sendMessage(msg);
-                } else {
-                    // 如果消息不是当前会话的消息发送通知栏通知
-                }
             }
 
         }
@@ -434,6 +487,29 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public void onCmdMessageReceived(List<EMMessage> messages) {
             //收到透传消息
+//            Log.i("ttt","收到穿透消息.");
+//            for (int i = 0;i<messages.size();i++){
+//                try {
+//                    Log.i("ttt","收到穿透消息==>"+messages.get(i).getStringAttribute("coordinate"));
+//                    String co = messages.get(i).getStringAttribute("coordinate");
+//                    JSONTokener jsonTokener = new JSONTokener(co);
+//                    JSONObject jsonObject = null;
+//                    try {
+//                        jsonObject = (JSONObject) jsonTokener.nextValue();
+//                        // 解析出来的经纬度
+//                        double lati = Double.valueOf(jsonObject.getString("latitude"));
+//                        double longi = Double.valueOf(jsonObject.getString("longitude"));
+//                        Log.i("ttt",lati + "-----" + longi);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } catch (HyphenateException e) {
+//                    e.printStackTrace();
+//                }
+//                EMMessageBody cmdMsgBody = messages.get(i).getBody();
+//
+//            }
         }
 
         @Override

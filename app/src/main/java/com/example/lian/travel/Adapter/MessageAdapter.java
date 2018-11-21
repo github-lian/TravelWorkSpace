@@ -42,20 +42,19 @@ public class MessageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.fragment_message_item,
-                    null);
+            view = View.inflate(mContext,R.layout.fragment_message_item,null);
             viewHolder = new ViewHolder();
             viewHolder.msgTitle = (TextView) view
                     .findViewById(R.id.msg_title);
             viewHolder.msgDesc = (TextView)view.findViewById(R.id.msg_desc);
             viewHolder.msgTime = (TextView)view.findViewById(R.id.msg_time);
-            viewHolder.msgPic = (SmartImageView)view.findViewById(R.id.msg_pic);
+//            viewHolder.msgPic = (SmartImageView)view.findViewById(R.id.msg_pic);
             view.setTag(viewHolder);
         } else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.msgPic.setImageResource(MsgList.get(position).getHead_portrait());
+//        viewHolder.msgPic.setImageResource(MsgList.get(position).getHead_portrait());
         viewHolder.msgTitle.setText(MsgList.get(position).getGroup_name());
         viewHolder.msgDesc.setText(MsgList.get(position).getSort_msg());
         viewHolder.msgTime.setText(MsgList.get(position).getTime());
@@ -66,6 +65,6 @@ public class MessageAdapter extends BaseAdapter {
         TextView msgTitle;
         TextView msgDesc;
         TextView msgTime;
-        SmartImageView msgPic;
+//        SmartImageView msgPic;
     }
 }

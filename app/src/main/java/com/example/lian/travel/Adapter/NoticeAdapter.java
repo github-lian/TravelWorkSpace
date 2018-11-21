@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.lian.travel.Bean.NoticeBean;
@@ -18,8 +19,12 @@ public class NoticeAdapter extends BaseAdapter{
     private View view;
     private Context mContext;
     private ViewHolder viewHolder;
-
-    public NoticeAdapter(Context mContext, List<NoticeBean> MsgList) {
+    private Button btn_agree,btn_reject,click;
+    //传入按钮点击事件
+    private MyClickListener mListener,pListener;
+    public NoticeAdapter(Context mContext, List<NoticeBean> MsgList,MyClickListener mListener,MyClickListener pListener) {
+        this.mListener = mListener;
+        this.pListener = pListener;
         this.MsgList = MsgList;
         this.mContext= mContext;
     }
@@ -58,8 +63,16 @@ public class NoticeAdapter extends BaseAdapter{
         viewHolder.ntcTitle.setText(MsgList.get(position).getTitle());
         viewHolder.ntcDesc.setText(MsgList.get(position).getSort_msg());
         viewHolder.ntcTime.setText(MsgList.get(position).getHandle());
+        btn_agree = view.findViewById(R.id.notice_agree_btn);
+        btn_reject = view.findViewById(R.id.notice_reject_btn);
+        click = view.findViewById(R.id.notice_click);
+        btn_agree.setTag(position);
+        btn_reject.setTag(position);
+        btn_agree.setOnClickListener(mListener);
+        btn_reject.setOnClickListener(pListener);
         return view;
     }
+
 
     class ViewHolder{
         TextView ntcTitle;
@@ -67,4 +80,19 @@ public class NoticeAdapter extends BaseAdapter{
         TextView ntcTime;
         SmartImageView ntcPic;
     }
+
+    /**
+     * 用于回调的抽象类
+     */
+    public static abstract class MyClickListener implements View.OnClickListener {
+        /**
+         * 基类的onClick方法
+         */
+        @Override
+        public void onClick(View v) {
+            myOnClick((Integer) v.getTag(), v);
+        }
+        public abstract void myOnClick(int position, View v);
+    }
+
 }

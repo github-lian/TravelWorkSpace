@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -31,9 +34,24 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 import com.example.lian.travel.Bean.SharePositionBean;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMMessageBody;
+import com.hyphenate.exceptions.HyphenateException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 //共享群内位置信息界面
 public class MapActivity extends AppCompatActivity implements View.OnClickListener {
@@ -46,11 +64,40 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private Button buttons;
     private LatLng latLng;
     private boolean isFirstLoc = true; // 是否首次定位
+    // 当前群聊天的 ID
+    private String mChatGroupId;
 
     private List<SharePositionBean> position_data= new ArrayList<SharePositionBean>();
 
+    private double other_lati=0,other_longi=0;
     //初始化一个广播
     private MyBroadcastReceiver receiver;
+
+    private  ArrayList<String> arr_id = new ArrayList<String>();
+    @Bind(R.id.back)
+    ImageView back;
+
+    @OnClick(R.id.back)
+    public void setBack(){
+        arr_id.clear();
+        finish();
+    }
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    if (other_lati!=0 || other_longi!=0){
+                        sharePosition(other_lati,other_longi,R.drawable.position,"NEW");
+                    }
+                    break;
+                case 1:
+                    Toast.makeText(getApplicationContext(),"有新成员加入位置共享",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +105,11 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //注意该方法要再setContentView方法之前实现
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_map);
+        ButterKnife.bind(this);
 
-        position_data.add(new SharePositionBean(40.853175, 116.500244,R.drawable.position,"测试"));
+        mChatGroupId = getIntent().getStringExtra("group_id");
+
+        position_data.add(new SharePositionBean(113.037705,23.166821,R.drawable.position,"测试"));
         position_data.add(new SharePositionBean(40.833175, 116.450244,R.drawable.position,"测试"));
         position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.position,"测试"));
 
@@ -74,6 +124,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         // 效验key失败
         filter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
         registerReceiver(receiver, filter);
+
     }
 
 
@@ -93,14 +144,15 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             sharePosition(position_data.get(i).getLatitude(),
                     position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
         }
-//        LatLng myposition = new LatLng(40.863175,116.400244);
+        //113.037705,23.16682
+//        LatLng myposition = new LatLng(113.037705,23.16682);
 //        drawCircle(myposition);
-        //移动到自己位置
+//        //移动到自己位置
 //        MapStatus.Builder builder = new MapStatus.Builder();
 //        builder.target(myposition);
 //        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-        //        //设定中心点坐标
-//        LatLng cenpt =  new LatLng(40.863175,116.400244);
+//                //设定中心点坐标
+//        LatLng cenpt =  new LatLng(113.037705,23.1668214);
 //        //定义地图状态
 //        MapStatus mMapStatus = new MapStatus.Builder()
 //                //要移动的点
@@ -132,22 +184,21 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     // 绘制圆
     private void drawCircle(LatLng position) {
-//        // 1.创建自己
-//        CircleOptions circleOptions = new CircleOptions();
-//        // 2.设置数据 以世界之窗为圆心，1000米为半径绘制
-//        circleOptions.center(position)//中心
-//                .radius(1000)  //半径
-//                .fillColor(0x6087CEEB)//填充圆的颜色
-//                .stroke(new Stroke(10, 0x6000BFFF));  //边框的宽度和颜色
-//        //把绘制的圆添加到百度地图上去
-//        mBaiduMap.addOverlay(circleOptions);
-
+        // 1.创建自己
+        CircleOptions circleOptions = new CircleOptions();
+        // 2.设置数据 以世界之窗为圆心，1000米为半径绘制
+        circleOptions.center(position)//中心
+                .radius(100)  //半径
+                .fillColor(0x60B0C4DE)//填充圆的颜色
+                .stroke(new Stroke(10, 0x6087CEEB));  //边框的宽度和颜色
+        //把绘制的圆添加到百度地图上去
+        mBaiduMap.addOverlay(circleOptions);
         /**
          * 绘制Marker，地图上常见的类似气球形状的图层
          */
         //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.position);
+                .fromResource(R.drawable.my_position);
         MarkerOptions markerOptions = new MarkerOptions();//参数设置类
         markerOptions.position(position);//marker坐标位置
         markerOptions.icon(bitmap);//marker图标，可以自定义
@@ -188,7 +239,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 .position(point)
                 .title(title)
                 .icon(bitmap);
-
         //在地图上添加Marker，并显示
         mBaiduMap.addOverlay(option);
     }
@@ -200,10 +250,10 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
         int span = 1000;
-        option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setScanSpan(10000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
-        option.setLocationNotify(true);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setLocationNotify(false);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
         option.setIsNeedLocationDescribe(true);//可选，默认false，设置是否需要位置语义化结果，可以在BDLocation
         // .getLocationDescribe里得到，结果类似于“在北京天安门附近”
         option.setIsNeedLocationPoiList(true);//可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
@@ -216,6 +266,18 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         mLocationClient.setLocOption(option);
     }
 
+    // 绘制mark覆盖物
+    private void drawMark(LatLng ll) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.position); // 描述图片
+        markerOptions.position(ll) // 设置位置
+                .icon(bitmap) // 加载图片
+                .draggable(true) // 支持拖拽
+                .title("世界之窗旁边的草房"); // 显示文本
+        //把绘制的圆添加到百度地图上去
+        mBaiduMap.addOverlay(markerOptions);
+    }
+
     //实现BDLocationListener接口,BDLocationListener为结果监听接口，异步获取定位结果
     public class MyLocationListener implements BDLocationListener {
 
@@ -223,10 +285,13 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         public void onReceiveLocation(BDLocation location) {
 //            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.i("position",latLng+"");
+            drawMark(latLng);
+            Log.i("pt","经度==》"+location.getLatitude()+"维度==》"+location.getLongitude());
+            drawCircle(latLng);
             sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
             sharePosition(location.getLatitude()-0.003, location.getLongitude()-0.004,R.drawable.position,"测试");
             sharePosition(location.getLatitude()+0.005, location.getLongitude()+0.002,R.drawable.position,"测试");
+            sendPosition(location.getLatitude(), location.getLongitude());
             // 构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
@@ -236,7 +301,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             // 设置定位数据
             mBaiduMap.setMyLocationData(locData);
             // 当不需要定位图层时关闭定位图层
-//            mBaiduMap.setMyLocationEnabled(false);
+            mBaiduMap.setMyLocationEnabled(false);
             if (isFirstLoc) {
                 isFirstLoc = false;
                 LatLng ll = new LatLng(location.getLatitude(),
@@ -244,7 +309,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 MapStatus.Builder builder = new MapStatus.Builder();
                 builder.target(ll).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-                Log.i("position",location.getLatitude()+ "," + location.getLongitude());
                 if (location.getLocType() == BDLocation.TypeGpsLocation) {
                     // GPS定位结果
 
@@ -278,7 +342,112 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         buttons.setOnClickListener(this);
     }
 
+    //收到消息
+    EMMessageListener msgListener = new EMMessageListener() {
 
+        @Override
+        public void onMessageReceived(List<EMMessage> messages) {
+
+        }
+
+        @Override
+        public void onCmdMessageReceived(List<EMMessage> messages) {
+            //收到透传消息
+            Log.i("ttt","收到穿透消息.");
+            for (int i = 0;i<messages.size();i++){
+                try {
+                    Log.i("ttt","Map收到穿透消息==>"+messages.get(i).getTo());
+                    String co = messages.get(i).getStringAttribute("coordinate");
+                    JSONTokener jsonTokener = new JSONTokener(co);
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = (JSONObject) jsonTokener.nextValue();
+                        // 解析出来的经纬度
+                        other_lati = Double.valueOf(jsonObject.getString("latitude"));
+                        other_longi = Double.valueOf(jsonObject.getString("longitude"));
+                        Log.i("ttt",other_lati + "-----" + other_longi);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (messages.get(i).getTo().equals(mChatGroupId)){
+                        Log.i("ttt","群号相同添加<==");
+                        Log.i("ttt","==>");
+                        if (arr_id.indexOf(messages.get(i).getTo())==-1){
+                            arr_id.add(messages.get(i).getTo());
+                            mHandler.sendEmptyMessage(1);
+                        }
+                        mHandler.sendEmptyMessage(0);
+                    }else {
+                        Log.i("ttt","群号不相同<==");
+                    }
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+                EMMessageBody cmdMsgBody = messages.get(i).getBody();
+
+            }
+        }
+
+        @Override
+        public void onMessageRead(List<EMMessage> messages) {
+            //收到已读回执
+        }
+
+        @Override
+        public void onMessageDelivered(List<EMMessage> message) {
+            //收到已送达回执
+        }
+
+        @Override
+        public void onMessageRecalled(List<EMMessage> messages) {
+            //消息被撤回
+        }
+
+        @Override
+        public void onMessageChanged(EMMessage message, Object change) {
+            //消息状态变动
+        }
+    };
+
+    private void sendPosition(double my_lat,double log ){
+        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+// 如果是群聊，设置chattype，默认是单聊
+        cmdMsg.setChatType(EMMessage.ChatType.GroupChat);
+        String action="shareLocation";  // 当前cmd消息的关键字
+        EMCmdMessageBody cmdBody=new EMCmdMessageBody(action);
+// 设置消息body
+        cmdMsg.addBody(cmdBody);
+// 设置要发给谁，用户username或者群聊groupid
+        cmdMsg.setTo(mChatGroupId);
+// 通过扩展字段设置坐标位置（参数可以自定义，但要求与ios保持一致）
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("latitude", my_lat);
+            jsonObject.put("longitude", log);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        cmdMsg.setAttribute("coordinate",jsonObject.toString());
+        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
+        cmdMsg.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                Log.i("ttt", "发送穿透消息成功");
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                Log.i("ttt", "发送穿透消息失败");
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {
@@ -293,6 +462,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+        // 添加消息监听
+        EMClient.getInstance().chatManager().addMessageListener(msgListener);
         mMapView.onResume();
     }
 

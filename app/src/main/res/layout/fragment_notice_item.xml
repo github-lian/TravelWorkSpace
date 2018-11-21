@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:layout_height="65dp">
 
     <com.loopj.android.image.SmartImageView
@@ -32,11 +33,12 @@
         android:textSize="12sp"
         android:id="@+id/ntc_desc"
         android:layout_toRightOf="@+id/ntc_pic"
+        android:layout_marginTop="3dp"
+        android:layout_below="@+id/ntc_title"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="30dp"
-        android:textColor="#000"
+        android:textColor="#A8A8A8"
         android:maxLines="1"
-        android:maxLength="5"
+        android:maxLength="10"
         android:text="desc" />
 
     <TextView
@@ -45,11 +47,49 @@
         android:textSize="12sp"
         android:id="@+id/ntc_handle"
         android:layout_toRightOf="@+id/ntc_pic"
+        android:layout_marginTop="3dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="55dp"
+        android:layout_below="@+id/ntc_desc"
         android:maxLines="1"
-        android:maxLength="5"
+        android:maxLength="10"
         android:text="desc"
-        android:textColor="#A8A8A8"/>
+        android:textColor="#000"/>
+
+    <Button
+        android:id="@+id/notice_agree_btn"
+        android:layout_width="40dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="5dp"
+        android:focusable="false"
+        android:layout_toLeftOf="@id/notice_reject_btn"
+        android:layout_centerVertical="true"
+        android:text="同意"
+        android:textSize="11sp"
+        android:background="@drawable/button_request"/>
+
+    <Button
+        android:id="@+id/notice_reject_btn"
+        android:layout_width="40dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:layout_centerVertical="true"
+        android:text="拒绝"
+        android:textSize="11sp"
+        android:background="@drawable/button_request"/>
+
+    <Button
+        android:id="@+id/notice_click"
+        android:layout_width="65dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="15dp"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:layout_centerVertical="true"
+        android:text="已同意"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:background="@drawable/button_request"/>
 
 </RelativeLayout>

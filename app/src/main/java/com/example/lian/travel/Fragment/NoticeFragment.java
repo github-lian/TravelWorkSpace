@@ -2,6 +2,8 @@ package com.example.lian.travel.Fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ import android.widget.Toast;
 import com.hyphenate.EMGroupChangeListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMucSharedFile;
+import com.hyphenate.exceptions.HyphenateException;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
@@ -47,6 +51,9 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -54,7 +61,7 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private ListView listView;
-
+    private NoticeAdapter noticeAdapter;
     private RefreshLayout mRefreshLayout;
     private List<NoticeBean> datas = new ArrayList<NoticeBean>();
 
@@ -62,12 +69,25 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    noticeAdapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    };
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notice, container, false);
         listView = (ListView) view.findViewById(R.id.notice_listview);
+
         addData();
 
         getNotice();
@@ -109,9 +129,10 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void addData() {
-        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组1", "嘻嘻", "处理人：小a"));
-        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组1", "移除a", "处理人：小a"));
-        NoticeAdapter noticeAdapter=new NoticeAdapter(getActivity(), datas);
+        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组1", "移除b", "处理人：小a"));
+        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组2", "移除c", "处理人：小a"));
+        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组3", "移除a", "处理人：小b"));
+        noticeAdapter=new NoticeAdapter(getActivity(), datas,mListener,pListener);
         listView.setAdapter(noticeAdapter);
     }
 
@@ -127,8 +148,9 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRequestToJoinReceived(String groupId, String groupName, String applyer, String reason) {
                 //用户申请加入群
+                datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, groupName, reason, "申请人:"+applyer));
                 Log.i("group","用户申请加入群-->"+reason+groupName+applyer);
-
+                mHandler.sendEmptyMessage(0);
             }
 
             @Override
@@ -287,6 +309,53 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
         return menuObjects;
     }
 
+    private NoticeAdapter.MyClickListener mListener = new NoticeAdapter.MyClickListener() {
+        @Override
+        public void myOnClick(final int position, View v) {
+            //获得组件
+            //在GridView和ListView中，getChildAt ( int position ) 方法中position指的是当前可见区域的第几个元素。
+            //如果你要获得GridView或ListView的第n个View，那么position就是n减去第一个可见View的位置
+            v = listView.getChildAt(position-listView.getFirstVisiblePosition());
+            Button btn = v.findViewById(R.id.notice_agree_btn);
+            btn.setVisibility(View.GONE);
+            Button btn1 = v.findViewById(R.id.notice_reject_btn);
+            btn1.setVisibility(View.GONE);
+            Button btn2 = v.findViewById(R.id.notice_click);
+            btn2.setText("已同意");
+            btn2.setVisibility(View.VISIBLE);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //群主加人调用此方法
+                        String [] s = {datas.get(position).getApplyer()};
+                        EMClient.getInstance().groupManager().addUsersToGroup(datas.get(position).getGroup_id(), s);//需异步处理
+                    }catch (final HyphenateException e){
+                        Log.e("err", e.getLocalizedMessage());
+                    }
+                }
+            }).start();
+            Log.i("click","position ==> "+position);
+        }
+    };
+
+    private NoticeAdapter.MyClickListener pListener = new NoticeAdapter.MyClickListener() {
+        @Override
+        public void myOnClick(int position, View v) {
+            //获得组件
+            //在GridView和ListView中，getChildAt ( int position ) 方法中position指的是当前可见区域的第几个元素。
+            //如果你要获得GridView或ListView的第n个View，那么position就是n减去第一个可见View的位置
+            v = listView.getChildAt(position-listView.getFirstVisiblePosition());
+            Button btn = v.findViewById(R.id.notice_agree_btn);
+            btn.setVisibility(View.GONE);
+            Button btn1 = v.findViewById(R.id.notice_reject_btn);
+            btn1.setVisibility(View.GONE);
+            Button btn2 = v.findViewById(R.id.notice_click);
+            btn2.setText("已拒绝");
+            btn2.setVisibility(View.VISIBLE);
+            Log.i("click","position ==> "+position);
+        }
+    };
     @Override
     public void onClick(View view) {
 

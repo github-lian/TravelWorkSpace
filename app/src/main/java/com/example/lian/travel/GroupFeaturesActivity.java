@@ -39,6 +39,8 @@ public class GroupFeaturesActivity extends AppCompatActivity {
 
     @OnClick(R.id.share_position_btn)
     public void setShare_position_btn(){
-        startActivity(new Intent(GroupFeaturesActivity.this, MapActivity.class));
+        Intent intent = new Intent(GroupFeaturesActivity.this, MapActivity.class);
+        intent.putExtra("group_id", getIntent().getStringExtra("group_id"));
+        startActivity(intent);
     }
 }
