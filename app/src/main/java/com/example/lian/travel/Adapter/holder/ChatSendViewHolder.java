@@ -28,6 +28,8 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
 
     @Bind(R.id.chat_item_date)
     TextView chatItemDate;
+    @Bind(R.id.nickname)
+    TextView nickname;
     @Bind(R.id.chat_item_header)
     ImageView chatItemHeader;
     @Bind(R.id.chat_item_content_text)
@@ -66,6 +68,7 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
             }
         });
         if (data.getContent() != null) {
+            nickname.setText(data.getNickname());
             chatItemContentText.setSpanText(handler, data.getContent(), true);
             chatItemVoice.setVisibility(View.GONE);
             chatItemContentText.setVisibility(View.VISIBLE);

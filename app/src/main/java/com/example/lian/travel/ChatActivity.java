@@ -60,6 +60,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.lian.travel.LoginActivity.Login_NickName;
+
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -297,6 +299,7 @@ public class ChatActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void MessageEventBus(final MessageInfo messageInfo) {
         messageInfo.setHeader("http://image.biaobaiju.com/uploads/20180802/00/1533142727-qTtYHaAgjy.jpg");
+        messageInfo.setNickname(Login_NickName);
         messageInfo.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
         messageInfo.setSendState(Constants.CHAT_ITEM_SENDING);
         Log.i("ttt", messageInfo + "");
@@ -407,6 +410,8 @@ public class ChatActivity extends AppCompatActivity {
                     // 这里只是简单的demo，也只是测试文字消息的收发，所以直接将body转为EMTextMessageBody去获取内容
                     EMTextMessageBody body = (EMTextMessageBody) message.getBody();
                     MessageInfo messagess = new MessageInfo();
+                    messagess.setMsgId(message.getTo());
+                    messagess.setNickname(message.getFrom());
                     messagess.setContent(body.getMessage());
                     messagess.setType(Constants.CHAT_ITEM_TYPE_LEFT);
                     messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");

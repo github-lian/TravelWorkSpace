@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="65dp">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.loopj.android.image.SmartImageView
+        android:id="@+id/msg_pic"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:scaleType="centerCrop"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/head"/>
 
     <!--<com.loopj.android.image.SmartImageView-->
         <!--android:id="@+id/msg_pic"-->
         <!--android:layout_width="55dp"-->
         <!--android:layout_height="55dp"-->
-        <!--android:scaleType="centerCrop"-->
         <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:scaleType="centerCrop"-->
         <!--android:layout_margin="10dp"-->
-        <!--android:src="@drawable/not_found"/>-->
+        <!--android:src="@drawable/head" />-->
+
 
     <TextView
         android:layout_width="wrap_content"

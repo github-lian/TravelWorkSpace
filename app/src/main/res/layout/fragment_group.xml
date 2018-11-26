@@ -22,6 +22,15 @@
             android:text="群组"
             android:textColor="#fff"
             android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/group_add"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/add"/>
     </RelativeLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout

@@ -11,9 +11,34 @@ public class MessageInfo {
     private int sendState;
     private String time;
     private String header;
+    private String nickname;
     private String imageUrl;
     private long voiceTime;
     private String msgId;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageInfo{" +
+                "type=" + type +
+                ", content='" + content + '\'' +
+                ", filepath='" + filepath + '\'' +
+                ", sendState=" + sendState +
+                ", time='" + time + '\'' +
+                ", header='" + header + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", voiceTime=" + voiceTime +
+                ", msgId='" + msgId + '\'' +
+                '}';
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     public int getType() {
         return type;
@@ -87,18 +112,4 @@ public class MessageInfo {
         this.msgId = msgId;
     }
 
-    @Override
-    public String toString() {
-        return "MessageInfo{" +
-                "type=" + type +
-                ", content='" + content + '\'' +
-                ", filepath='" + filepath + '\'' +
-                ", sendState=" + sendState +
-                ", time='" + time + '\'' +
-                ", header='" + header + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", voiceTime=" + voiceTime +
-                ", msgId='" + msgId + '\'' +
-                '}';
-    }
 }

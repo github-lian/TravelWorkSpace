@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.loopj.android.image.SmartImageView
+        android:id="@+id/grp_pic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/head"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/label_expand_child"
+        android:layout_toRightOf="@+id/grp_pic"
+        android:layout_marginLeft="5dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxLength="20"
+        android:textColor="#000"
+        android:text="title"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

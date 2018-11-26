@@ -196,7 +196,7 @@ public class SearchGroupResultActivity extends AppCompatActivity implements View
                         public void run() {
                             for (int i = 0; i < returnGroups.size(); i++) { //填充集合内容
 
-                                group = new GroupBean(returnGroups.get(i).getGroupId(),R.drawable.a, returnGroups.get(i).getGroupName(), "群简介", "220");
+                                group = new GroupBean(returnGroups.get(i).getGroupId(),R.drawable.book, returnGroups.get(i).getGroupName(), "群简介", "220");
                                 gList.add(group);
                             }
                             groupAdapter = new GroupAdapter(SearchGroupResultActivity.this, gList);

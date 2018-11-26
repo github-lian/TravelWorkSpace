@@ -36,6 +36,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // 弹出框
     private ProgressDialog mDialog;
 
+    public static String Login_NickName="ll123";
+
     @Bind(R.id.ed_account)
     EditText account;
     @Bind(R.id.ed_password)
@@ -143,6 +145,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         public void run() {
                             mDialog.dismiss();
                             Log.i("login", "登陆成功");
+                            Login_NickName = account.getText().toString().trim();
                             Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i1);
                             // 加载所有会话到内存

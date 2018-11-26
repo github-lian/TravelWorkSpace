@@ -4,14 +4,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -27,11 +37,13 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MapViewLayoutParams;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.example.lian.travel.Bean.SharePositionBean;
 import com.hyphenate.EMCallBack;
@@ -53,6 +65,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.lian.travel.LoginActivity.Login_NickName;
+
 //共享群内位置信息界面
 public class MapActivity extends AppCompatActivity implements View.OnClickListener {
     private MapView mMapView;
@@ -67,19 +81,49 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     // 当前群聊天的 ID
     private String mChatGroupId;
 
+    private Boolean send_key = true;
+
     private List<SharePositionBean> position_data= new ArrayList<SharePositionBean>();
 
     private double other_lati=0,other_longi=0;
     //初始化一个广播
     private MyBroadcastReceiver receiver;
 
-    private  ArrayList<String> arr_id = new ArrayList<String>();
+    private  ArrayList<String> from_arr = new ArrayList<String>();
+    private Marker myMarker;//自己位置的覆盖物
+    private String from;
+
+    /**传递进来的源图片*/
+    private Bitmap source;
+    /**图片的配文*/
+    private String text;
+    /**图片加上配文后生成的新图片*/
+    private Bitmap newBitmap;
+    /**配文的颜色*/
+    private int textColor = Color.BLACK;
+    /**配文的字体大小*/
+    private float textSize = 16;
+    /**图片的宽度*/
+    private int bitmapWidth;
+    /**图片的高度*/
+    private int bitmapHeight;
+    /**画图片的画笔*/
+    private Paint bitmapPaint;
+    /**画文字的画笔*/
+    private Paint textPaint;
+    /**配文与图片间的距离*/
+    private float padding = 20;
+    /**配文行与行之间的距离*/
+    private float linePadding = 5;
+
+
     @Bind(R.id.back)
     ImageView back;
 
     @OnClick(R.id.back)
     public void setBack(){
-        arr_id.clear();
+        send_key = false;
+        from_arr.clear();
         finish();
     }
     private Handler mHandler = new Handler(){
@@ -89,11 +133,39 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             switch (msg.what){
                 case 0:
                     if (other_lati!=0 || other_longi!=0){
-                        sharePosition(other_lati,other_longi,R.drawable.position,"NEW");
+                        //标记共享位置
+                        for(int i=0;i<position_data.size();i++){
+                            Log.i("list",position_data.get(i).getFrom()+"from==>"+from);
+                            Log.i("list","lat==>"+position_data.get(i).getLatitude());
+                            if (position_data.get(i).getFrom().equals(from)){
+                                position_data.get(i).setLatitude(other_lati);
+                                position_data.get(i).setLongitude(other_longi);
+                                Log.i("list","lat==>"+position_data.get(i).getLatitude());
+                            }
+                            sharePosition(position_data.get(i).getLatitude(),
+                                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+                        }
                     }
                     break;
                 case 1:
-                    Toast.makeText(getApplicationContext(),"有新成员加入位置共享",Toast.LENGTH_SHORT).show();
+                    if (other_lati!=0 || other_longi!=0){
+                        position_data.add(new SharePositionBean(other_lati,other_longi,R.drawable.position,from,from));
+                        //标记共享位置
+                        for(int i=0;i<position_data.size();i++){
+                            Log.i("list",position_data.get(i).getLatitude()+"");
+                            sharePosition(position_data.get(i).getLatitude(),
+                                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+                        }
+                    }
+                    Toast.makeText(getApplicationContext(),from+" 加入位置共享",Toast.LENGTH_SHORT).show();
+                    break;
+                case 2:
+                    //标记共享位置
+                    for(int i=0;i<position_data.size();i++){
+                        Log.i("list",position_data.get(i).getLatitude()+"");
+                        sharePosition(position_data.get(i).getLatitude(),
+                                position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+                    }
                     break;
             }
         }
@@ -109,9 +181,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
         mChatGroupId = getIntent().getStringExtra("group_id");
 
-        position_data.add(new SharePositionBean(113.037705,23.166821,R.drawable.position,"测试"));
-        position_data.add(new SharePositionBean(40.833175, 116.450244,R.drawable.position,"测试"));
-        position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.position,"测试"));
+//        position_data.add(new SharePositionBean(113.037705,23.166821,R.drawable.position,"测试"));
+//        position_data.add(new SharePositionBean(40.833175, 116.450244,R.drawable.position,"测试"));
+//        position_data.add(new SharePositionBean(40.663175, 116.400244,R.drawable.position,"测试"));
 
         initView();
         initMap();
@@ -138,12 +210,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //默认显示普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
-        //标记共享位置
-        for(int i=0;i<position_data.size();i++){
-            Log.i("list",position_data.get(i).getLatitude()+"");
-            sharePosition(position_data.get(i).getLatitude(),
-                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
-        }
+//        //标记共享位置
+//        for(int i=0;i<position_data.size();i++){
+//            Log.i("list",position_data.get(i).getLatitude()+"");
+//            sharePosition(position_data.get(i).getLatitude(),
+//                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+//        }
         //113.037705,23.16682
 //        LatLng myposition = new LatLng(113.037705,23.16682);
 //        drawCircle(myposition);
@@ -184,31 +256,34 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     // 绘制圆
     private void drawCircle(LatLng position) {
-        // 1.创建自己
-        CircleOptions circleOptions = new CircleOptions();
-        // 2.设置数据 以世界之窗为圆心，1000米为半径绘制
-        circleOptions.center(position)//中心
-                .radius(100)  //半径
-                .fillColor(0x60B0C4DE)//填充圆的颜色
-                .stroke(new Stroke(10, 0x6087CEEB));  //边框的宽度和颜色
-        //把绘制的圆添加到百度地图上去
-        mBaiduMap.addOverlay(circleOptions);
+        mBaiduMap.clear();
+        mHandler.sendEmptyMessage(2);
+//        // 1.创建自己
+//        CircleOptions circleOptions = new CircleOptions();
+//        // 2.设置数据 以世界之窗为圆心，1000米为半径绘制
+//        circleOptions.center(position)//中心
+//                .radius(100)  //半径
+//                .fillColor(0x60B0C4DE)//填充圆的颜色
+//                .stroke(new Stroke(10, 0x6087CEEB));  //边框的宽度和颜色
+//        //把绘制的圆添加到百度地图上去
+//        mBaiduMap.addOverlay(circleOptions);
         /**
          * 绘制Marker，地图上常见的类似气球形状的图层
          */
         //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.my_position);
+//        BitmapDescriptor bitmap = BitmapDescriptorFactory
+//                .fromResource(R.drawable.my_position);
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(drawTextToBitmap(getApplicationContext(),R.drawable.my_position,Login_NickName));
         MarkerOptions markerOptions = new MarkerOptions();//参数设置类
         markerOptions.position(position);//marker坐标位置
-        markerOptions.icon(bitmap);//marker图标，可以自定义
+        markerOptions.icon(bitmapDescriptor);//marker图标，可以自定义
         markerOptions.draggable(false);//是否可拖拽，默认不可拖拽
         markerOptions.anchor(0.5f, 1.0f);//设置 marker覆盖物与位置点的位置关系，默认（0.5f, 1.0f）水平居中，垂直下对齐
         markerOptions.alpha(0.8f);//marker图标透明度，0~1.0，默认为1.0
-        markerOptions.animateType(MarkerOptions.MarkerAnimateType.drop);//marker出现的方式，从天上掉下
+        markerOptions.animateType(MarkerOptions.MarkerAnimateType.grow);//marker出现的方式，从天上掉下
         markerOptions.flat(false);//marker突变是否平贴地面
         markerOptions.zIndex(1);//index
-        Marker mMarker = (Marker) mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
+        myMarker = (Marker) mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
     }
 
     class MyBroadcastReceiver extends BroadcastReceiver {
@@ -230,17 +305,20 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //定义Maker坐标点
         LatLng point = new LatLng(latitude, longitude);
         //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(icon);
-        //构建MarkerOption，用于在地图上添加Marker
-        OverlayOptions option = new MarkerOptions()
-                .zIndex(1)  //设置Marker所在层级
-                .draggable(true)  //设置手势拖拽
-                .position(point)
-                .title(title)
-                .icon(bitmap);
-        //在地图上添加Marker，并显示
-        mBaiduMap.addOverlay(option);
+//        BitmapDescriptor bitmap = BitmapDescriptorFactory
+//                .fromResource(R.drawable.position);
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(drawTextToBitmap(getApplicationContext(),R.drawable.position,title));
+        MarkerOptions markerOptions = new MarkerOptions();//参数设置类
+        markerOptions.position(point);//marker坐标位置
+        markerOptions.icon(bitmapDescriptor);//marker图标，可以自定义
+        markerOptions.draggable(false);//是否可拖拽，默认不可拖拽
+        markerOptions.anchor(0.5f, 1.0f);//设置 marker覆盖物与位置点的位置关系，默认（0.5f, 1.0f）水平居中，垂直下对齐
+        markerOptions.alpha(0.8f);//marker图标透明度，0~1.0，默认为1.0
+        markerOptions.flat(false);//marker突变是否平贴地面
+        markerOptions.zIndex(1);//index
+        mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
+
+        drawOtherText(latitude-0.0002,longitude,title);
     }
 
     //配置定位SDK参数
@@ -250,7 +328,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
         int span = 1000;
-        option.setScanSpan(10000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setScanSpan(5000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
         option.setLocationNotify(false);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
@@ -278,6 +356,89 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         mBaiduMap.addOverlay(markerOptions);
     }
 
+    public Bitmap drawTextToBitmap(Context gContext,
+                                   int gResId,
+                                   String gText) {
+
+        String text = String.valueOf(gText);
+
+        Resources resources = gContext.getResources();
+        float scale = resources.getDisplayMetrics().density;
+        source = BitmapFactory.decodeResource(resources, gResId);
+        bitmapWidth = source.getWidth();
+        bitmapHeight = source.getHeight();
+        Bitmap bitmap =
+                BitmapFactory.decodeResource(resources, gResId);
+
+        // resource bitmaps are imutable,
+        // so we need to convert it to mutable one
+        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+        //新创建一个新图片比源图片多出一部分，后续用来与文字叠加用
+        newBitmap = Bitmap.createBitmap((int)(bitmapWidth+textSize+linePadding),
+                (int) (bitmapHeight+padding+textSize+linePadding), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(newBitmap);
+//把图片画上来
+        Paint bitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        canvas.drawBitmap(source,0,0,bitmapPaint);
+        //在图片下边画一个白色矩形块用来放文字，防止文字是透明背景，在有些情况下保存到本地后看不出来
+        textPaint.setColor(Color.TRANSPARENT);
+        canvas.drawRect(0,source.getHeight(),source.getWidth(),
+                source.getHeight()+padding+textSize+linePadding,textPaint);
+
+//把文字画上来
+        textPaint.setColor(textColor);
+        textPaint.setTextSize(textSize);
+
+        Rect bounds = new Rect();
+        //获取文字的字宽高以便把文字与图片中心对齐
+        textPaint.getTextBounds(text,0,text.length(),bounds);
+        //画文字的时候高度需要注意文字大小以及文字行间距
+        canvas.drawText(text,source.getWidth()/2-bounds.width()/2,
+                source.getHeight()+bounds.height()/2,textPaint);
+
+//        Canvas canvas = new Canvas(bitmap);
+//        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        paint.setColor(Color.BLACK);
+//        paint.setTextSize((int) (12*scale));
+//        paint.setDither(true);
+//        paint.setFilterBitmap(true);
+//        paint.setTextAlign(Paint.Align.CENTER);
+//        Rect bounds = new Rect();
+//        paint.getTextBounds(text, 0, text.length(), bounds);
+//        int x = (bitmap.getWidth())/2;
+//        int y = (bitmap.getHeight() - bounds.height())/2;
+//        canvas.drawText(text, x, y*10/15 , paint);
+        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.restore();
+        return newBitmap;
+    }
+
+
+    private void drawText(double lat,double log){
+//        TextOptions textOptions = new TextOptions();
+//        textOptions.fontColor(Color.RED) //设置字体颜色
+//                .text(Login_NickName)  //设置显示文本
+//                .position(new LatLng(lat,log))   //设置显示坐标
+//                .fontSize(14) //设置文本大小
+//                .typeface(Typeface.SERIF);  //设置字体 Android的字体就三种，对称的，不对称的，等宽的
+//        //把绘制的圆添加到百度地图上去
+//        mBaiduMap.addOverlay(textOptions);
+    }
+
+    private void drawOtherText(double lat,double log,String nickname){
+//        TextOptions textOptions = new TextOptions();
+//        textOptions.fontColor(Color.RED) //设置字体颜色
+//                .text(nickname)  //设置显示文本
+//                .position(new LatLng(lat,log))   //设置显示坐标
+//                .fontSize(14) //设置文本大小
+//                .typeface(Typeface.SERIF);  //设置字体 Android的字体就三种，对称的，不对称的，等宽的
+//        //把绘制的圆添加到百度地图上去
+//        mBaiduMap.addOverlay(textOptions);
+    }
+
     //实现BDLocationListener接口,BDLocationListener为结果监听接口，异步获取定位结果
     public class MyLocationListener implements BDLocationListener {
 
@@ -285,13 +446,16 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         public void onReceiveLocation(BDLocation location) {
 //            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            drawMark(latLng);
+//            drawMark(latLng);
             Log.i("pt","经度==》"+location.getLatitude()+"维度==》"+location.getLongitude());
             drawCircle(latLng);
-            sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
-            sharePosition(location.getLatitude()-0.003, location.getLongitude()-0.004,R.drawable.position,"测试");
-            sharePosition(location.getLatitude()+0.005, location.getLongitude()+0.002,R.drawable.position,"测试");
-            sendPosition(location.getLatitude(), location.getLongitude());
+            drawText(location.getLatitude()+0.00065, location.getLongitude());
+//            sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
+//            sharePosition(location.getLatitude()-0.003, location.getLongitude()-0.004,R.drawable.position,"测试");
+//            sharePosition(location.getLatitude()+0.005, location.getLongitude()+0.002,R.drawable.position,"测试");
+            if (send_key){
+                sendPosition(location.getLatitude(), location.getLongitude());
+            }
             // 构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
@@ -356,7 +520,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             Log.i("ttt","收到穿透消息.");
             for (int i = 0;i<messages.size();i++){
                 try {
-                    Log.i("ttt","Map收到穿透消息==>"+messages.get(i).getTo());
+                    Log.i("ttt","Map收到穿透消息==>"+messages);
                     String co = messages.get(i).getStringAttribute("coordinate");
                     JSONTokener jsonTokener = new JSONTokener(co);
                     JSONObject jsonObject = null;
@@ -373,8 +537,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     if (messages.get(i).getTo().equals(mChatGroupId)){
                         Log.i("ttt","群号相同添加<==");
                         Log.i("ttt","==>");
-                        if (arr_id.indexOf(messages.get(i).getTo())==-1){
-                            arr_id.add(messages.get(i).getTo());
+                        from = messages.get(i).getFrom();
+                        if (from_arr.indexOf(messages.get(i).getFrom())==-1){
+                            from_arr.add(messages.get(i).getFrom());
                             mHandler.sendEmptyMessage(1);
                         }
                         mHandler.sendEmptyMessage(0);

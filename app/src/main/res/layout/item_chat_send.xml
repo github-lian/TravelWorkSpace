@@ -12,6 +12,15 @@
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:id="@+id/nickname"
+        android:layout_gravity="end"
+        android:layout_marginRight="10dp"
+        android:text="nickname"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

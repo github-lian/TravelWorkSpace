@@ -3,14 +3,24 @@ package com.example.lian.travel.Bean;
 public class SharePositionBean {
     private double latitude;//经度
     private double longitude;//维度
+    private String from;//来自
     private int icon;//头像
     private String title;//标题
 
-    public SharePositionBean(double latitude, double longitude, int icon, String title) {
+    public SharePositionBean(double latitude, double longitude, int icon, String title, String from) {
         this.latitude = latitude;
         this.longitude = longitude;
+        this.from = from;
         this.icon = icon;
         this.title = title;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 
     public double getLatitude() {
