@@ -34,36 +34,15 @@ public class GroupMemberActivity extends AppCompatActivity {
     private GroupMemberAdapter mAdapter;
     private List<GroupMemberBean> datas = new ArrayList<GroupMemberBean>();
     private ListView listView;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {//传递并执行耗时的操作
-            switch (msg.what) {
-                case 0:
-//                    if (!datas.equals(null)&&!datas.isEmpty())
-//                        datas.clear();
-//                    //从本地加载群组列表
-//                    List<EMGroup> grouplist = EMClient.getInstance().groupManager().getAllGroups();
-//                    for (int i = 0; i < grouplist.size(); i++) {
-//                        Log.i("ss", grouplist.get(i).getGroupId() + "---" + grouplist.get(i).getGroupName() +
-//                                grouplist.get(i).getDescription() + "---" + grouplist.get(i).getOwner());
-//                        datas.add(new GroupMemberBean("5456456456456456",R.drawable.head));
-//
-//                    }
-                    Log.i("-----------------","-------------------------------");
-                    datas.add(new GroupMemberBean("5456456456456456",R.drawable.head));
-                    mAdapter = new GroupMemberAdapter(getApplicationContext(), datas);
-                    listView.setAdapter(mAdapter);
-                    break;
-            }
-        }
-    };
+    private String owenr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_member);
         getMemberFromService();
+        owenr = getIntent().getStringExtra("owner");
+        Log.i("aaa",""+owenr);
         listView =findViewById(R.id.list_group);
-        handler.sendEmptyMessage(0);
     }
 
     private void getMemberFromService() {
@@ -73,7 +52,6 @@ public class GroupMemberActivity extends AppCompatActivity {
 
                 try {
                     //如果群成员较多，需要多次从服务器获取完成
-
                     final List<String> memberList = new ArrayList<>();
                     EMCursorResult<String> result = null;
                     final int pageSize = 20;
@@ -86,13 +64,13 @@ public class GroupMemberActivity extends AppCompatActivity {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
+                            datas.add(new GroupMemberBean(owenr,R.drawable.head));
                             for (int i=0;i<memberList.size();i++){
                                 Log.i("ss", " 成员==》 " + memberList.get(i));
+                                datas.add(new GroupMemberBean(memberList.get(i),R.drawable.head));
                             }
-                            Toast.makeText(getApplicationContext(), "获取成功", Toast.LENGTH_LONG).show();
-//                            handler.sendEmptyMessage(0);
-//                            setResult(RESULT_OK);
-//                            finish();
+                            mAdapter = new GroupMemberAdapter(getApplicationContext(), datas);
+                            listView.setAdapter(mAdapter);
                         }
                     });
                 } catch (final HyphenateException e) {

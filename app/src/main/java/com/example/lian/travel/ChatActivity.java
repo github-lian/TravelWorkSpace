@@ -148,6 +148,7 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = new Intent(ChatActivity.this, GroupFeaturesActivity.class);
         intent.putExtra("group_name", getIntent().getStringExtra("group_name"));
         intent.putExtra("group_id", getIntent().getStringExtra("group_id"));
+        intent.putExtra("owner", getIntent().getStringExtra("owner"));
         startActivity(intent);
     }
 
