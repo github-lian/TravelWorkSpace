@@ -66,6 +66,7 @@ public class GroupFeaturesActivity extends AppCompatActivity {
     public void setMember(){
         Intent intent = new Intent(GroupFeaturesActivity.this, GroupMemberActivity.class);
         intent.putExtra("group_id", getIntent().getStringExtra("group_id"));
+        intent.putExtra("owner", getIntent().getStringExtra("owner"));
         startActivity(intent);
     }
 
@@ -77,7 +78,7 @@ public class GroupFeaturesActivity extends AppCompatActivity {
     @OnClick(R.id.del_group)
     public void setDel_group(){
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setIcon(R.drawable.warning)//设置标题的图片
+                .setIcon(android.R.drawable.sym_def_app_icon)//设置标题的图片
                 .setTitle("提示")//设置对话框的标题
                 .setMessage("确定要删除此群聊?")//设置对话框的内容
                 //设置对话框的按钮
@@ -100,7 +101,7 @@ public class GroupFeaturesActivity extends AppCompatActivity {
     @OnClick(R.id.exit_group_btn)
     public void  setExit_group_btn(){
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setIcon(R.drawable.warning)//设置标题的图片
+                .setIcon(android.R.drawable.sym_def_app_icon)//设置标题的图片
                 .setTitle("提示")//设置对话框的标题
                 .setMessage("确定要退出此群聊?")//设置对话框的内容
                 //设置对话框的按钮

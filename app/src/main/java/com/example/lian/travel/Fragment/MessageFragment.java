@@ -104,7 +104,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
                     for (int i = 0; i < grouplist.size(); i++) {
                         Log.i("ss", grouplist.get(i).getGroupId() + "---" + grouplist.get(i).getGroupName() +
                                 grouplist.get(i).getDescription() + "---" + grouplist.get(i).getOwner());
-                        datas.add(new MessageBean(grouplist.get(i).getGroupId(),R.drawable.head, grouplist.get(i).getGroupName() , grouplist.get(i).getDescription(), "2018-10-22"));
+                        datas.add(new MessageBean(grouplist.get(i).getGroupId(),R.drawable.head, grouplist.get(i).getGroupName() , grouplist.get(i).getDescription(), "2018-10-22",grouplist.get(i).getOwner()));
                     }
                     Collections.reverse(datas);
                     mAdapter = new MessageAdapter(getActivity(), datas);
@@ -318,6 +318,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
         intent.putExtra("group_id",datas.get(SignPosition).getId());
         intent.putExtra("group_name",datas.get(SignPosition).getGroup_name());
         intent.putExtra("ec_chat_id","ll");
+        intent.putExtra("owner",datas.get(SignPosition).getOwner());
         startActivity(intent);
     }
 

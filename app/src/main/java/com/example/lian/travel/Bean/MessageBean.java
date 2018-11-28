@@ -6,13 +6,23 @@ public class MessageBean {
     private String group_name;//组名
     private String sort_msg;//简略消息
     private String time;//时间
+    private String owner;
 
-    public MessageBean(String id, int head_portrait, String group_name, String sort_msg, String time) {
+    public MessageBean(String id, int head_portrait, String group_name, String sort_msg, String time, String owner) {
         this.id = id;
         this.head_portrait = head_portrait;
         this.group_name = group_name;
         this.sort_msg = sort_msg;
         this.time = time;
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getId() {
