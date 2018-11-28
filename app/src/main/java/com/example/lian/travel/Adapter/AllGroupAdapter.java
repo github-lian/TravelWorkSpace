@@ -46,8 +46,7 @@ public class AllGroupAdapter extends BaseAdapter {
             view = LayoutInflater.from(mContext).inflate(R.layout.fragment_message_item,
                     null);
             viewHolder = new AllGroupAdapter.ViewHolder();
-            viewHolder.msgTitle = (TextView) view
-                    .findViewById(R.id.msg_title);
+            viewHolder.msgTitle = (TextView) view.findViewById(R.id.msg_title);
             viewHolder.msgDesc = (TextView)view.findViewById(R.id.msg_desc);
             viewHolder.msgTime = (TextView)view.findViewById(R.id.msg_time);
             viewHolder.msgPic = (SmartImageView)view.findViewById(R.id.msg_pic);
