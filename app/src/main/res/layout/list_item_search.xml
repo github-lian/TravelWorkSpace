@@ -22,12 +22,13 @@
                 <!--android:src="@drawable/book" />-->
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_circle"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/book"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/head"
             app:riv_border_color="#333333"
             app:riv_border_width="2dp"
             app:riv_mutate_background="true"
+            android:layout_centerVertical="true"
             app:riv_oval="true" />
 
 
@@ -36,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:orientation="vertical"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/img_circle"
             android:layout_marginLeft="10dp">
 
