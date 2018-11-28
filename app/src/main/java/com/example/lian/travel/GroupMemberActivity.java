@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
@@ -14,12 +15,24 @@ import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class GroupMemberActivity extends AppCompatActivity {
 //
+    @Bind(R.id.back)
+    ImageView back;
+
+    @OnClick(R.id.back)
+    public void setBack(){
+        finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_member);
+        ButterKnife.bind(this);
         getMemberFromService();
     }
 

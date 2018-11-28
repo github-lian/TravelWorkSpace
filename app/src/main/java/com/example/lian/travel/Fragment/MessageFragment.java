@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,11 +61,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MessageFragment extends Fragment implements View.OnClickListener,AdapterView.OnItemClickListener{
-    private Typeface font;
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
 
@@ -75,6 +79,15 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
     private List<MessageBean> datas = new ArrayList<MessageBean>();
 
     private int SignPosition=0;
+    @Bind(R.id.group_add)
+    ImageView group_add;
+
+    @OnClick(R.id.group_add)
+    public void setGroup_add(){
+        if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
+            mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
+        }
+    }
     public MessageFragment() {
         // Required empty public constructor
     }
@@ -112,7 +125,8 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_message, container, false);
-        font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");//引用文字图标
+
+        ButterKnife.bind(this,view);
 
         SetIcon(view);//设置文字图标
 
@@ -164,16 +178,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
 
     //设置文字图标
     private void SetIcon(View view) {
-        TextView icon_back = view.findViewById(R.id.back);
-        TextView icon_add = view.findViewById(R.id.icon_add);
-        icon_back.setTypeface(font);
-//        12333333335555
-        icon_add.setTypeface(font);
-
         fragmentManager = getActivity().getSupportFragmentManager();
-
-        icon_back.setOnClickListener(this);
-        icon_add.setOnClickListener(this);
     }
 
     private void addData() {
@@ -301,15 +306,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.icon_add:
-                if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
-                    mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
-                }
-                break;
-            case R.id.back:
-                Intent i = new Intent(getContext(), MapActivity.class);
-                startActivity(i);
-                break;
         }
     }
 

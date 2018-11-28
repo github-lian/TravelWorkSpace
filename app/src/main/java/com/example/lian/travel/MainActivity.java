@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //检测读写权限
         PermisionUtils.verifyStoragePermissions(MainActivity.this);
 
-        initView();//初始化组件
+//        initView();//初始化组件
 
 
         //SetIcon();  //设置文字图标

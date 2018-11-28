@@ -91,6 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:hint="输入新密码"
+            android:inputType="textPassword"
             android:textSize="14sp"
             android:gravity="center"
             android:textColorHint="#FFF"

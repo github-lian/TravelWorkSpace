@@ -284,6 +284,10 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         markerOptions.flat(false);//marker突变是否平贴地面
         markerOptions.zIndex(1);//index
         myMarker = (Marker) mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
+        //设置经纬度（参数一是纬度，参数二是经度）
+        MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(position);
+        //对地图的中心点进行更新，
+        mBaiduMap.setMapStatus(mapstatusupdate);
     }
 
     class MyBroadcastReceiver extends BroadcastReceiver {
@@ -317,8 +321,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         markerOptions.flat(false);//marker突变是否平贴地面
         markerOptions.zIndex(1);//index
         mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
-
-        drawOtherText(latitude-0.0002,longitude,title);
     }
 
     //配置定位SDK参数
@@ -375,8 +377,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         //新创建一个新图片比源图片多出一部分，后续用来与文字叠加用
-        newBitmap = Bitmap.createBitmap((int)(bitmapWidth+textSize+linePadding),
-                (int) (bitmapHeight+padding+textSize+linePadding), Bitmap.Config.ARGB_8888);
+        newBitmap = Bitmap.createBitmap((int)(textSize+linePadding+padding),
+                (int) (padding+textSize+linePadding), Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(newBitmap);
 //把图片画上来
@@ -417,28 +419,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private void drawText(double lat,double log){
-//        TextOptions textOptions = new TextOptions();
-//        textOptions.fontColor(Color.RED) //设置字体颜色
-//                .text(Login_NickName)  //设置显示文本
-//                .position(new LatLng(lat,log))   //设置显示坐标
-//                .fontSize(14) //设置文本大小
-//                .typeface(Typeface.SERIF);  //设置字体 Android的字体就三种，对称的，不对称的，等宽的
-//        //把绘制的圆添加到百度地图上去
-//        mBaiduMap.addOverlay(textOptions);
-    }
-
-    private void drawOtherText(double lat,double log,String nickname){
-//        TextOptions textOptions = new TextOptions();
-//        textOptions.fontColor(Color.RED) //设置字体颜色
-//                .text(nickname)  //设置显示文本
-//                .position(new LatLng(lat,log))   //设置显示坐标
-//                .fontSize(14) //设置文本大小
-//                .typeface(Typeface.SERIF);  //设置字体 Android的字体就三种，对称的，不对称的，等宽的
-//        //把绘制的圆添加到百度地图上去
-//        mBaiduMap.addOverlay(textOptions);
-    }
-
     //实现BDLocationListener接口,BDLocationListener为结果监听接口，异步获取定位结果
     public class MyLocationListener implements BDLocationListener {
 
@@ -449,7 +429,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 //            drawMark(latLng);
             Log.i("pt","经度==》"+location.getLatitude()+"维度==》"+location.getLongitude());
             drawCircle(latLng);
-            drawText(location.getLatitude()+0.00065, location.getLongitude());
 //            sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
 //            sharePosition(location.getLatitude()-0.003, location.getLongitude()-0.004,R.drawable.position,"测试");
 //            sharePosition(location.getLatitude()+0.005, location.getLongitude()+0.002,R.drawable.position,"测试");
