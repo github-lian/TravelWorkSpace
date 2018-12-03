@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.example.lian.travel.AboutUsActivity;
 import com.example.lian.travel.Adapter.MessageAdapter;
 import com.example.lian.travel.Bean.MessageBean;
+import com.example.lian.travel.Bean.NoticeBean;
 import com.example.lian.travel.ChatActivity;
 import com.example.lian.travel.CreateGroupActivity;
 import com.example.lian.travel.MainActivity;
@@ -39,10 +40,12 @@ import com.example.lian.travel.R;
 import com.example.lian.travel.SearchGroupNumberActivity;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
+import com.hyphenate.EMGroupChangeListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupOptions;
+import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.exceptions.HyphenateException;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -132,14 +135,16 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
 
         initMenuFragment();  //初始化右上角菜单
 
-        IntentFilter filter = new IntentFilter(CreateGroupActivity.action);//注册广播
+        getNotice();//消息通知
+
+        IntentFilter filter = new IntentFilter(MainActivity.action);//注册广播
         getActivity().registerReceiver(broadcastReceiver, filter);
 
         listView = (ListView) view.findViewById(R.id.list_view);
 
 //        addData();
         listView.setOnItemClickListener(this);
-        //初始化
+        //初始化下拉刷新
         mRefreshLayout = view.findViewById(R.id.refreshLayout);
         //设置 Header 为 Material风格
         mRefreshLayout.setRefreshHeader(new MaterialHeader(getActivity()).setShowBezierWave(true));
@@ -151,7 +156,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 getGroupFromService();
-                handler.sendEmptyMessage(0);
 //                mData.clear();
 //                mNameAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
@@ -171,6 +175,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
             }
         });
 
+        //从服务器中获取群组数据
         getGroupFromService();
 
         return view;
@@ -251,6 +256,8 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
 //        inflater.inflate(R.menu.menu_main, menu);
 //        return true;
 //    }
+
+    //广播接收者
     public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
     @Override
@@ -258,9 +265,15 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
         String sign = intent.getStringExtra("sign");
         Log.i("ss","sign00==>"+sign);
         switch (sign){
+            //从CreateGroupActivity中传入的广播
             case "CreateGroupActivity":
                 getGroupFromService();
                 Log.i("ss","sign==>"+sign);
+                break;
+            //从NoticeFragment中传入的广播
+            case "NoticeFragment":
+                getGroupFromService();
+                mAdapter.notifyDataSetChanged();
                 break;
         }
         // TODO Auto-generated method stub
@@ -273,6 +286,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
         getActivity().unregisterReceiver(broadcastReceiver);
     }
 
+    //从服务器中获取群组数据
     private void getGroupFromService(){
         new Thread(new Runnable() {
             @Override
@@ -309,6 +323,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
         }
     }
 
+    //Listview中群组点击事件
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         SignPosition = position;
@@ -322,6 +337,134 @@ public class MessageFragment extends Fragment implements View.OnClickListener,Ad
         startActivity(intent);
     }
 
+    //获取消息通知
+    private void getNotice(){
 
+        EMClient.getInstance().groupManager().addGroupChangeListener(new EMGroupChangeListener() {
+            @Override
+            public void onInvitationReceived(String groupId, String groupName, String inviter, String reason) {
+                //接收到群组加入邀请
+                Log.i("add","接收到群组加入邀请-->"+reason);
+                agreeGroup(groupId);
+            }
+
+            @Override
+            public void onRequestToJoinReceived(String groupId, String groupName, String applyer, String reason) {
+                //用户申请加入群
+            }
+
+            @Override
+            public void onRequestToJoinAccepted(String groupId, String groupName, String accepter) {
+                //加群申请被同意
+                Log.i("group","加群申请被同意-->"+accepter);
+            }
+
+            @Override
+            public void onRequestToJoinDeclined(String groupId, String groupName, String decliner, String reason) {
+                //加群申请被拒绝
+            }
+
+            @Override
+            public void onInvitationAccepted(String groupId, String inviter, String reason) {
+                //群组邀请被同意
+            }
+
+            @Override
+            public void onInvitationDeclined(String groupId, String invitee, String reason) {
+                //群组邀请被拒绝
+            }
+
+            @Override
+            public void onUserRemoved(String s, String s1) {
+
+            }
+
+            @Override
+            public void onGroupDestroyed(String s, String s1) {
+
+            }
+
+            @Override
+            public void onAutoAcceptInvitationFromGroup(String groupId, String inviter, String inviteMessage) {
+                //接收邀请时自动加入到群组的通知
+                Log.i("add","接收邀请动加入群");
+            }
+
+            @Override
+            public void onMuteListAdded(String groupId, final List<String> mutes, final long muteExpire) {
+                //成员禁言的通知
+            }
+
+            @Override
+            public void onMuteListRemoved(String groupId, final List<String> mutes) {
+                //成员从禁言列表里移除通知
+            }
+
+            @Override
+            public void onAdminAdded(String groupId, String administrator) {
+                //增加管理员的通知
+            }
+
+            @Override
+            public void onAdminRemoved(String groupId, String administrator) {
+                //管理员移除的通知
+            }
+
+            @Override
+            public void onOwnerChanged(String groupId, String newOwner, String oldOwner) {
+                //群所有者变动通知
+            }
+            @Override
+            public void onMemberJoined(final String groupId,  final String member){
+                //群组加入新成员通知
+            }
+            @Override
+            public void onMemberExited(final String groupId, final String member) {
+                //群成员退出通知
+            }
+
+            @Override
+            public void onAnnouncementChanged(String groupId, String announcement) {
+                //群公告变动通知
+            }
+
+            @Override
+            public void onSharedFileAdded(String groupId, EMMucSharedFile sharedFile) {
+                //增加共享文件的通知
+            }
+
+            @Override
+            public void onSharedFileDeleted(String groupId, String fileId) {
+                //群共享文件删除通知
+            }
+        });
+    }
+
+    //同意进群
+    private void agreeGroup(final String id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().acceptInvitation(id,null);//需异步处理
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), "接收邀请", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(MainActivity.action);
+                            intent.putExtra("sign", "NoticeFragment");
+                            getActivity().sendBroadcast(intent);
+                        }
+                    });
+                } catch (final HyphenateException e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+            }
+        }).start();
+    }
 
 }

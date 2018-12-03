@@ -23,6 +23,9 @@ import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.mob.MobSDK;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -37,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog mDialog;
 
     public static String Login_NickName="ll123";
+    public static final String TAG_EXIT = "exit";
 
     @Bind(R.id.ed_account)
     EditText account;
@@ -47,8 +51,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         MobSDK.init(this);
         setContentView(R.layout.activity_login);
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                InputMethodManager inputMethodManager=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }, 1000); // 秒后自动弹出
         init();
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            boolean isExit = intent.getBooleanExtra(TAG_EXIT, false);
+            if (isExit) {
+                this.finish();
+            }
+        }
+    }
+
     protected void init(){
         ed_vc_code=(EditText)findViewById(R.id.ed_vc_code);
         // 监听回车键

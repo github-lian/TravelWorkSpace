@@ -37,7 +37,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(i);
                 break;
             case R.id.button_quit_App:
-                System.exit(0);
+                Intent intent = new Intent(this,LoginActivity.class);
+                intent.putExtra(LoginActivity.TAG_EXIT, true);
+                startActivity(intent);
                 break;
             case R.id.back:
                 finish();

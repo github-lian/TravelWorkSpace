@@ -42,6 +42,7 @@ public class SearchGroupResultActivity extends AppCompatActivity implements View
     private String[] population={"100","200","300"};
 
     private String search_key;
+    private boolean sign = true;
     private String cursor;
 
     private Handler mHandler = new Handler(){
@@ -195,9 +196,18 @@ public class SearchGroupResultActivity extends AppCompatActivity implements View
                     runOnUiThread(new Runnable() {
                         public void run() {
                             for (int i = 0; i < returnGroups.size(); i++) { //填充集合内容
-
-                                group = new GroupBean(returnGroups.get(i).getGroupId(),R.drawable.book, returnGroups.get(i).getGroupName(), "群简介", "220");
-                                gList.add(group);
+                                if (returnGroups.get(i).getGroupName().indexOf(search_key) != -1){
+                                    group = new GroupBean(returnGroups.get(i).getGroupId(),R.drawable.book, returnGroups.get(i).getGroupName(), "欢迎各位加入", 1+i*i-i+"");
+                                    gList.add(group);
+                                    sign = false;
+                                }
+                            }
+                            if (sign){
+                                for (int i = 0; i < returnGroups.size(); i++) { //填充集合内容
+                                        group = new GroupBean(returnGroups.get(i).getGroupId(),R.drawable.book, returnGroups.get(i).getGroupName(), "欢迎各位加入", 1+i*i-i+"");
+                                        gList.add(group);
+                                        sign = true;
+                                }
                             }
                             groupAdapter = new GroupAdapter(SearchGroupResultActivity.this, gList);
                             gListView.setAdapter(groupAdapter);

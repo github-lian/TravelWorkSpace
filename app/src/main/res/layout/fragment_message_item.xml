@@ -12,10 +12,10 @@
         app:riv_border_color="#333333"
         app:riv_border_width="2dp"
         app:riv_mutate_background="true"
+        app:riv_oval="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="5dp"
-        android:layout_margin="10dp"
-        app:riv_oval="true" />
+        android:layout_margin="10dp" />
 
     <!--<com.loopj.android.image.SmartImageView-->
         <!--android:id="@+id/msg_pic"-->
@@ -52,7 +52,7 @@
         android:layout_marginTop="40dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:maxLength="10"
+        android:maxLength="20"
         android:text="desc" />
 
     <TextView

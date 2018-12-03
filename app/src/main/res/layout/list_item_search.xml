@@ -24,7 +24,8 @@
             android:id="@+id/img_circle"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/head"
+            android:layout_margin="10dp"
+            android:src="@drawable/head1"
             app:riv_border_color="#333333"
             app:riv_border_width="2dp"
             app:riv_mutate_background="true"
@@ -64,17 +65,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_centerVertical="true"
-            android:layout_marginRight="2dp"
+            android:layout_marginRight="15dp"
             android:layout_toLeftOf="@id/btn_request_group">
 
             <TextView
                 android:id="@+id/tv_population"
-                android:layout_width="26dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="200"/>
+                android:text="0"/>
             <TextView
                 android:id="@+id/tv_max"
-                android:layout_width="33dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="/500"/>
 
@@ -85,7 +86,7 @@
             android:id="@+id/btn_request_group"
             android:layout_width="65dp"
             android:layout_height="30dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
             android:focusable="false"
             android:layout_centerVertical="true"

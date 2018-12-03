@@ -1,6 +1,7 @@
 package com.example.lian.travel.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 
 import com.example.lian.travel.Adapter.NoticeAdapter;
 import com.example.lian.travel.Bean.NoticeBean;
+import com.example.lian.travel.GroupFeaturesActivity;
+import com.example.lian.travel.MainActivity;
 import com.example.lian.travel.R;
 
 import android.graphics.Bitmap;
@@ -54,6 +57,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.baidu.location.g.a.i;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -64,16 +69,17 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
     private NoticeAdapter noticeAdapter;
     private RefreshLayout mRefreshLayout;
     private List<NoticeBean> datas = new ArrayList<NoticeBean>();
+    private String applyer;
 
     public NoticeFragment() {
         // Required empty public constructor
     }
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
                     noticeAdapter.notifyDataSetChanged();
                     break;
@@ -129,34 +135,35 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void addData() {
-        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组1", "移除b", "处理人：小a"));
-        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组2", "移除c", "处理人：小a"));
-        datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, "实训小组3", "移除a", "处理人：小b"));
-        noticeAdapter=new NoticeAdapter(getActivity(), datas,mListener,pListener);
+        datas.add(new NoticeBean(" ", " ", " ", " ", " ", R.drawable.head, "实训小组1", "移除b", "处理人：小a"));
+        datas.add(new NoticeBean(" ", " ", " ", " ", " ", R.drawable.head, "实训小组2", "移除c", "处理人：小a"));
+        datas.add(new NoticeBean(" ", " ", " ", " ", " ", R.drawable.head, "实训小组3", "移除a", "处理人：小b"));
+        noticeAdapter = new NoticeAdapter(getActivity(), datas, mListener, pListener);
         listView.setAdapter(noticeAdapter);
     }
 
-    private void getNotice(){
+    private void getNotice() {
 
         EMClient.getInstance().groupManager().addGroupChangeListener(new EMGroupChangeListener() {
             @Override
             public void onInvitationReceived(String groupId, String groupName, String inviter, String reason) {
                 //接收到群组加入邀请
-                Log.i("group","接收到群组加入邀请-->"+reason);
+                Log.i("add", "接收到群组加入邀请-->" + reason);
+                agreeGroup(groupId, inviter);
             }
 
             @Override
             public void onRequestToJoinReceived(String groupId, String groupName, String applyer, String reason) {
                 //用户申请加入群
-                datas.add(new NoticeBean(" "," "," "," "," ",R.drawable.head, groupName, reason, "申请人:"+applyer));
-                Log.i("group","用户申请加入群-->"+reason+groupName+applyer);
+                datas.add(new NoticeBean(groupId, groupName, applyer, " ", " ", R.drawable.head, groupName, reason, "申请人:" + applyer));
+                Log.i("group", "用户申请加入群-->" + reason + groupName + applyer);
                 mHandler.sendEmptyMessage(0);
             }
 
             @Override
             public void onRequestToJoinAccepted(String groupId, String groupName, String accepter) {
                 //加群申请被同意
-                Log.i("group","加群申请被同意-->"+accepter);
+                Log.i("group", "加群申请被同意-->" + accepter);
             }
 
             @Override
@@ -187,7 +194,7 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onAutoAcceptInvitationFromGroup(String groupId, String inviter, String inviteMessage) {
                 //接收邀请时自动加入到群组的通知
-
+                Log.i("add", "接收邀请动加入群");
             }
 
             @Override
@@ -214,10 +221,12 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             public void onOwnerChanged(String groupId, String newOwner, String oldOwner) {
                 //群所有者变动通知
             }
+
             @Override
-            public void onMemberJoined(final String groupId,  final String member){
+            public void onMemberJoined(final String groupId, final String member) {
                 //群组加入新成员通知
             }
+
             @Override
             public void onMemberExited(final String groupId, final String member) {
                 //群成员退出通知
@@ -315,7 +324,7 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             //获得组件
             //在GridView和ListView中，getChildAt ( int position ) 方法中position指的是当前可见区域的第几个元素。
             //如果你要获得GridView或ListView的第n个View，那么position就是n减去第一个可见View的位置
-            v = listView.getChildAt(position-listView.getFirstVisiblePosition());
+            v = listView.getChildAt(position - listView.getFirstVisiblePosition());
             Button btn = v.findViewById(R.id.notice_agree_btn);
             btn.setVisibility(View.GONE);
             Button btn1 = v.findViewById(R.id.notice_reject_btn);
@@ -323,21 +332,59 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             Button btn2 = v.findViewById(R.id.notice_click);
             btn2.setText("已同意");
             btn2.setVisibility(View.VISIBLE);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //群主加人调用此方法
-                        String [] s = {datas.get(position).getApplyer()};
-                        EMClient.getInstance().groupManager().addUsersToGroup(datas.get(position).getGroup_id(), s);//需异步处理
-                    }catch (final HyphenateException e){
-                        Log.e("err", e.getLocalizedMessage());
-                    }
-                }
-            }).start();
-            Log.i("click","position ==> "+position);
+            addGroup(position);
         }
     };
+
+    private void addGroup(final int i) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.i("add", "groupid ===> " + datas.get(i).getGroup_id() + datas.get(i).getApplyer());
+                    EMClient.getInstance().groupManager().inviteUser(datas.get(i).getGroup_id(), new String[]{datas.get(i).getApplyer()}, null);//需异步处理
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), "加人成功", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } catch (final HyphenateException e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+            }
+        }).start();
+    }
+
+    private void agreeGroup(final String id, final String inviter) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().acceptInvitation(id, null);//需异步处理
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), "接收邀请", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(MainActivity.action);
+                            intent.putExtra("sign", "NoticeFragment");
+                            getActivity().sendBroadcast(intent);
+                        }
+                    });
+                } catch (final HyphenateException e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+            }
+        }).start();
+    }
 
     private NoticeAdapter.MyClickListener pListener = new NoticeAdapter.MyClickListener() {
         @Override
@@ -345,7 +392,7 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             //获得组件
             //在GridView和ListView中，getChildAt ( int position ) 方法中position指的是当前可见区域的第几个元素。
             //如果你要获得GridView或ListView的第n个View，那么position就是n减去第一个可见View的位置
-            v = listView.getChildAt(position-listView.getFirstVisiblePosition());
+            v = listView.getChildAt(position - listView.getFirstVisiblePosition());
             Button btn = v.findViewById(R.id.notice_agree_btn);
             btn.setVisibility(View.GONE);
             Button btn1 = v.findViewById(R.id.notice_reject_btn);
@@ -353,9 +400,10 @@ public class NoticeFragment extends Fragment implements View.OnClickListener {
             Button btn2 = v.findViewById(R.id.notice_click);
             btn2.setText("已拒绝");
             btn2.setVisibility(View.VISIBLE);
-            Log.i("click","position ==> "+position);
+            Log.i("click", "position ==> " + position);
         }
     };
+
     @Override
     public void onClick(View view) {
 

@@ -49,6 +49,8 @@ android {
 
 
 dependencies {
+    //文件选择器
+    implementation 'ru.bartwell:exfilepicker:2.1'
     // 上下文菜单
     implementation 'com.yalantis:contextmenu:1.0.4'
     //recyclerview

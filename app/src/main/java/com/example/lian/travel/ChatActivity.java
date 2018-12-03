@@ -1,5 +1,6 @@
 package com.example.lian.travel;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
@@ -12,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -55,6 +57,8 @@ import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -115,6 +119,15 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                InputMethodManager inputMethodManager=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }, 1000); // 秒后自动弹出
+
         // 获取当前会话的username(如果是群聊就是群id)
         mChatId = getIntent().getStringExtra("ec_chat_id");
         mChatGroupId = getIntent().getStringExtra("group_id");
@@ -133,7 +146,6 @@ public class ChatActivity extends AppCompatActivity {
         initConversation();
 //        sendPosition();
 
-        getPositon();
     }
 
     @OnClick(R.id.back)
@@ -150,10 +162,6 @@ public class ChatActivity extends AppCompatActivity {
         intent.putExtra("group_id", getIntent().getStringExtra("group_id"));
         intent.putExtra("owner", getIntent().getStringExtra("owner"));
         startActivity(intent);
-    }
-
-    private void getPositon(){
-
     }
 
     private void initWidget() {
@@ -180,6 +188,7 @@ public class ChatActivity extends AppCompatActivity {
 
         GlobalOnItemClickManagerUtils globalOnItemClickListener = GlobalOnItemClickManagerUtils.getInstance(this);
         globalOnItemClickListener.attachToEditText(editText);
+        showSoftKeyboard();
 
         chatAdapter = new ChatAdapter(this);
         layoutManager = new LinearLayoutManager(this);
@@ -213,6 +222,12 @@ public class ChatActivity extends AppCompatActivity {
         messageInfos = new ArrayList<>();
 //        LoadData();
     }
+
+    //显示键盘
+    public void showSoftKeyboard(){
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    };
 
     /**
      * item点击事件
@@ -314,45 +329,6 @@ public class ChatActivity extends AppCompatActivity {
                 chatAdapter.notifyDataSetChanged();
             }
         }, 1000);
-    }
-
-    private void sendPosition(){
-        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
-// 如果是群聊，设置chattype，默认是单聊
-        cmdMsg.setChatType(EMMessage.ChatType.GroupChat);
-        String action="shareLocation";  // 当前cmd消息的关键字
-        EMCmdMessageBody cmdBody=new EMCmdMessageBody(action);
-// 设置消息body
-        cmdMsg.addBody(cmdBody);
-// 设置要发给谁，用户username或者群聊groupid
-        cmdMsg.setTo(mChatGroupId);
-// 通过扩展字段设置坐标位置（参数可以自定义，但要求与ios保持一致）
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("latitude", "38.6518");
-            jsonObject.put("longitude", "104.07642");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        cmdMsg.setAttribute("coordinate",jsonObject.toString());
-        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
-        cmdMsg.setMessageStatusCallback(new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                Log.i("ttt", "发送穿透消息成功");
-            }
-
-            @Override
-            public void onProgress(int progress, String status) {
-
-            }
-
-            @Override
-            public void onError(int code, String error) {
-                Log.i("ttt", "发送穿透消息失败");
-            }
-        });
     }
 
     private void sendTextMsg(String content) {
@@ -459,6 +435,7 @@ public class ChatActivity extends AppCompatActivity {
             EMTextMessageBody body = (EMTextMessageBody) messge.getBody();
             // 将消息内容和时间显示出来
             MessageInfo messagess = new MessageInfo();
+            messagess.setNickname(messge.getFrom());
             messagess.setContent(body.getMessage());
             messagess.setType(Constants.CHAT_ITEM_TYPE_LEFT);
             messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");

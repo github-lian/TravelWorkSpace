@@ -81,39 +81,62 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     // 当前群聊天的 ID
     private String mChatGroupId;
 
-    private Boolean send_key = true;
+    private boolean send_key = true;
+    private boolean center_key = true;
 
-    private List<SharePositionBean> position_data= new ArrayList<SharePositionBean>();
+    private List<SharePositionBean> position_data = new ArrayList<SharePositionBean>();
 
-    private double other_lati=0,other_longi=0;
+    private double other_lati = 0, other_longi = 0;
     //初始化一个广播
     private MyBroadcastReceiver receiver;
 
-    private  ArrayList<String> from_arr = new ArrayList<String>();
+    private ArrayList<String> from_arr = new ArrayList<String>();
     private Marker myMarker;//自己位置的覆盖物
     private String from;
 
-    /**传递进来的源图片*/
+    /**
+     * 传递进来的源图片
+     */
     private Bitmap source;
-    /**图片的配文*/
+    /**
+     * 图片的配文
+     */
     private String text;
-    /**图片加上配文后生成的新图片*/
+    /**
+     * 图片加上配文后生成的新图片
+     */
     private Bitmap newBitmap;
-    /**配文的颜色*/
+    /**
+     * 配文的颜色
+     */
     private int textColor = Color.BLACK;
-    /**配文的字体大小*/
+    /**
+     * 配文的字体大小
+     */
     private float textSize = 16;
-    /**图片的宽度*/
+    /**
+     * 图片的宽度
+     */
     private int bitmapWidth;
-    /**图片的高度*/
+    /**
+     * 图片的高度
+     */
     private int bitmapHeight;
-    /**画图片的画笔*/
+    /**
+     * 画图片的画笔
+     */
     private Paint bitmapPaint;
-    /**画文字的画笔*/
+    /**
+     * 画文字的画笔
+     */
     private Paint textPaint;
-    /**配文与图片间的距离*/
+    /**
+     * 配文与图片间的距离
+     */
     private float padding = 20;
-    /**配文行与行之间的距离*/
+    /**
+     * 配文行与行之间的距离
+     */
     private float linePadding = 5;
 
 
@@ -121,55 +144,57 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     ImageView back;
 
     @OnClick(R.id.back)
-    public void setBack(){
+    public void setBack() {
         send_key = false;
         from_arr.clear();
         finish();
     }
-    private Handler mHandler = new Handler(){
+
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
-                    if (other_lati!=0 || other_longi!=0){
+                    if (other_lati != 0 || other_longi != 0) {
                         //标记共享位置
-                        for(int i=0;i<position_data.size();i++){
-                            Log.i("list",position_data.get(i).getFrom()+"from==>"+from);
-                            Log.i("list","lat==>"+position_data.get(i).getLatitude());
-                            if (position_data.get(i).getFrom().equals(from)){
+                        for (int i = 0; i < position_data.size(); i++) {
+                            Log.i("list", position_data.get(i).getFrom() + "from==>" + from);
+                            Log.i("list", "lat==>" + position_data.get(i).getLatitude());
+                            if (position_data.get(i).getFrom().equals(from)) {
                                 position_data.get(i).setLatitude(other_lati);
                                 position_data.get(i).setLongitude(other_longi);
-                                Log.i("list","lat==>"+position_data.get(i).getLatitude());
+                                Log.i("list", "lat==>" + position_data.get(i).getLatitude());
                             }
                             sharePosition(position_data.get(i).getLatitude(),
-                                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+                                    position_data.get(i).getLongitude(), position_data.get(i).getIcon(), position_data.get(i).getTitle());
                         }
                     }
                     break;
                 case 1:
-                    if (other_lati!=0 || other_longi!=0){
-                        position_data.add(new SharePositionBean(other_lati,other_longi,R.drawable.position,from,from));
+                    if (other_lati != 0 || other_longi != 0) {
+                        position_data.add(new SharePositionBean(other_lati, other_longi, R.drawable.position, from, from));
                         //标记共享位置
-                        for(int i=0;i<position_data.size();i++){
-                            Log.i("list",position_data.get(i).getLatitude()+"");
+                        for (int i = 0; i < position_data.size(); i++) {
+                            Log.i("list", position_data.get(i).getLatitude() + "");
                             sharePosition(position_data.get(i).getLatitude(),
-                                    position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+                                    position_data.get(i).getLongitude(), position_data.get(i).getIcon(), position_data.get(i).getTitle());
                         }
                     }
-                    Toast.makeText(getApplicationContext(),from+" 加入位置共享",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), from + " 加入位置共享", Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
                     //标记共享位置
-                    for(int i=0;i<position_data.size();i++){
-                        Log.i("list",position_data.get(i).getLatitude()+"");
+                    for (int i = 0; i < position_data.size(); i++) {
+                        Log.i("list", position_data.get(i).getLatitude() + "");
                         sharePosition(position_data.get(i).getLatitude(),
-                                position_data.get(i).getLongitude(),position_data.get(i).getIcon(),position_data.get(i).getTitle());
+                                position_data.get(i).getLongitude(), position_data.get(i).getIcon(), position_data.get(i).getTitle());
                     }
                     break;
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,7 +298,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //构建Marker图标
 //        BitmapDescriptor bitmap = BitmapDescriptorFactory
 //                .fromResource(R.drawable.my_position);
-        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(drawTextToBitmap(getApplicationContext(),R.drawable.my_position,Login_NickName));
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(drawTextToBitmap(getApplicationContext(), R.drawable.my_position, Login_NickName));
         MarkerOptions markerOptions = new MarkerOptions();//参数设置类
         markerOptions.position(position);//marker坐标位置
         markerOptions.icon(bitmapDescriptor);//marker图标，可以自定义
@@ -284,10 +309,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         markerOptions.flat(false);//marker突变是否平贴地面
         markerOptions.zIndex(1);//index
         myMarker = (Marker) mBaiduMap.addOverlay(markerOptions);//在地图上增加mMarker图层
-        //设置经纬度（参数一是纬度，参数二是经度）
-        MapStatusUpdate mapstatusupdate =  MapStatusUpdateFactory.newLatLng(position);
-        //对地图的中心点进行更新，
-        mBaiduMap.setMapStatus(mapstatusupdate);
     }
 
     class MyBroadcastReceiver extends BroadcastReceiver {
@@ -299,19 +320,19 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             if (action.equals(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR)) {
                 Log.i("map", "无法连接网络");
                 // key效验失败
-            } else if(action.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR)) {
+            } else if (action.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR)) {
                 Log.i("map", "key校验失败");
             }
         }
     }
 
-    private void sharePosition(double latitude,double longitude ,int icon ,String title){
+    private void sharePosition(double latitude, double longitude, int icon, String title) {
         //定义Maker坐标点
         LatLng point = new LatLng(latitude, longitude);
         //构建Marker图标
 //        BitmapDescriptor bitmap = BitmapDescriptorFactory
 //                .fromResource(R.drawable.position);
-        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(drawTextToBitmap(getApplicationContext(),R.drawable.position,title));
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(drawTextToBitmap(getApplicationContext(), R.drawable.position, title));
         MarkerOptions markerOptions = new MarkerOptions();//参数设置类
         markerOptions.position(point);//marker坐标位置
         markerOptions.icon(bitmapDescriptor);//marker图标，可以自定义
@@ -377,18 +398,18 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         //新创建一个新图片比源图片多出一部分，后续用来与文字叠加用
-        newBitmap = Bitmap.createBitmap((int)(textSize+linePadding+padding),
-                (int) (padding+textSize+linePadding), Bitmap.Config.ARGB_8888);
+        newBitmap = Bitmap.createBitmap((int) (textSize + linePadding + padding),
+                (int) (padding + textSize + linePadding), Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(newBitmap);
 //把图片画上来
         Paint bitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        canvas.drawBitmap(source,0,0,bitmapPaint);
+        canvas.drawBitmap(source, 0, 0, bitmapPaint);
         //在图片下边画一个白色矩形块用来放文字，防止文字是透明背景，在有些情况下保存到本地后看不出来
         textPaint.setColor(Color.TRANSPARENT);
-        canvas.drawRect(0,source.getHeight(),source.getWidth(),
-                source.getHeight()+padding+textSize+linePadding,textPaint);
+        canvas.drawRect(0, source.getHeight(), source.getWidth(),
+                source.getHeight() + padding + textSize + linePadding, textPaint);
 
 //把文字画上来
         textPaint.setColor(textColor);
@@ -396,10 +417,10 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
         Rect bounds = new Rect();
         //获取文字的字宽高以便把文字与图片中心对齐
-        textPaint.getTextBounds(text,0,text.length(),bounds);
+        textPaint.getTextBounds(text, 0, text.length(), bounds);
         //画文字的时候高度需要注意文字大小以及文字行间距
-        canvas.drawText(text,source.getWidth()/2-bounds.width()/2,
-                source.getHeight()+bounds.height()/2,textPaint);
+        canvas.drawText(text, source.getWidth() / 2 - bounds.width() / 2,
+                source.getHeight() + bounds.height() / 2, textPaint);
 
 //        Canvas canvas = new Canvas(bitmap);
 //        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -427,12 +448,19 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 //            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
 //            drawMark(latLng);
-            Log.i("pt","经度==》"+location.getLatitude()+"维度==》"+location.getLongitude());
+            Log.i("pt", "经度==》" + location.getLatitude() + "维度==》" + location.getLongitude());
             drawCircle(latLng);
 //            sharePosition(location.getLatitude()-0.001, location.getLongitude()-0.001,R.drawable.position,"测试");
 //            sharePosition(location.getLatitude()-0.003, location.getLongitude()-0.004,R.drawable.position,"测试");
 //            sharePosition(location.getLatitude()+0.005, location.getLongitude()+0.002,R.drawable.position,"测试");
-            if (send_key){
+            if (center_key) {
+                //设置经纬度（参数一是纬度，参数二是经度）
+                MapStatusUpdate mapstatusupdate = MapStatusUpdateFactory.newLatLng(latLng);
+                //对地图的中心点进行更新，
+                mBaiduMap.setMapStatus(mapstatusupdate);
+                center_key = false;
+            }
+            if (send_key) {
                 sendPosition(location.getLatitude(), location.getLongitude());
             }
             // 构造定位数据
@@ -496,10 +524,10 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         @Override
         public void onCmdMessageReceived(List<EMMessage> messages) {
             //收到透传消息
-            Log.i("ttt","收到穿透消息.");
-            for (int i = 0;i<messages.size();i++){
+            Log.i("ttt", "收到穿透消息.");
+            for (int i = 0; i < messages.size(); i++) {
                 try {
-                    Log.i("ttt","Map收到穿透消息==>"+messages);
+                    Log.i("ttt", "Map收到穿透消息==>" + messages);
                     String co = messages.get(i).getStringAttribute("coordinate");
                     JSONTokener jsonTokener = new JSONTokener(co);
                     JSONObject jsonObject = null;
@@ -508,22 +536,22 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         // 解析出来的经纬度
                         other_lati = Double.valueOf(jsonObject.getString("latitude"));
                         other_longi = Double.valueOf(jsonObject.getString("longitude"));
-                        Log.i("ttt",other_lati + "-----" + other_longi);
+                        Log.i("ttt", other_lati + "-----" + other_longi);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    if (messages.get(i).getTo().equals(mChatGroupId)){
-                        Log.i("ttt","群号相同添加<==");
-                        Log.i("ttt","==>");
+                    if (messages.get(i).getTo().equals(mChatGroupId)) {
+                        Log.i("ttt", "群号相同添加<==");
+                        Log.i("ttt", "==>");
                         from = messages.get(i).getFrom();
-                        if (from_arr.indexOf(messages.get(i).getFrom())==-1){
+                        if (from_arr.indexOf(messages.get(i).getFrom()) == -1) {
                             from_arr.add(messages.get(i).getFrom());
                             mHandler.sendEmptyMessage(1);
                         }
                         mHandler.sendEmptyMessage(0);
-                    }else {
-                        Log.i("ttt","群号不相同<==");
+                    } else {
+                        Log.i("ttt", "群号不相同<==");
                     }
                 } catch (HyphenateException e) {
                     e.printStackTrace();
@@ -554,12 +582,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         }
     };
 
-    private void sendPosition(double my_lat,double log ){
+    private void sendPosition(double my_lat, double log) {
         EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
 // 如果是群聊，设置chattype，默认是单聊
         cmdMsg.setChatType(EMMessage.ChatType.GroupChat);
-        String action="shareLocation";  // 当前cmd消息的关键字
-        EMCmdMessageBody cmdBody=new EMCmdMessageBody(action);
+        String action = "shareLocation";  // 当前cmd消息的关键字
+        EMCmdMessageBody cmdBody = new EMCmdMessageBody(action);
 // 设置消息body
         cmdMsg.addBody(cmdBody);
 // 设置要发给谁，用户username或者群聊groupid
@@ -573,7 +601,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
 
-        cmdMsg.setAttribute("coordinate",jsonObject.toString());
+        cmdMsg.setAttribute("coordinate", jsonObject.toString());
         EMClient.getInstance().chatManager().sendMessage(cmdMsg);
         cmdMsg.setMessageStatusCallback(new EMCallBack() {
             @Override

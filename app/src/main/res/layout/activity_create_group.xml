@@ -119,7 +119,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:maxLength="5"
+            android:ellipsize="end"
+            android:maxEms="6"
+            android:singleLine="true"
             android:text="好好学习"
             android:textColor="#3B3B3B"
             android:textSize="16sp" />
@@ -192,23 +194,13 @@
             android:text="群类型"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/group_type_tv"
+        <Spinner
+            android:id="@+id/group_type_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginTop="20dp"
-            android:text="学习"
-            android:textColor="#3B3B3B"
-            android:textSize="16sp" />
+            android:layout_marginTop="20dp" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/more" />
     </RelativeLayout>
 
     <View

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import android.util.Log;
 import android.widget.ListView;
@@ -39,10 +40,18 @@ public class GroupMemberActivity extends AppCompatActivity {
     private List<GroupMemberBean> datas = new ArrayList<GroupMemberBean>();
     private ListView listView;
     private String owenr;
+    @Bind(R.id.back)
+    ImageView back;
+
+    @OnClick(R.id.back)
+    public void setBack(){
+        finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_member);
+        ButterKnife.bind(this);
         getMemberFromService();
         owenr = getIntent().getStringExtra("owner");
         Log.i("aaa",""+owenr);

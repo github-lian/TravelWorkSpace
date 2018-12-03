@@ -42,12 +42,12 @@ Tips：每天打开Android Studio第一件需要做的事--> pull同步代码 VC
 3.push同步到github远程仓库 VCS --> git --> pull 快捷键 Ctrl + Shift + K
 */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener ,OnMenuItemClickListener, OnMenuItemLongClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnMenuItemClickListener, OnMenuItemLongClickListener {
     private Typeface font;
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private BottomTabBar mBottomTabBar;
-
+    public static String action = "MainActivity.action";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initMenuFragment();  //初始化右上角菜单
 
     }
+
     //初始化组件
-    private void initView(){
+    private void initView() {
         EMClient.getInstance().login("ll", "123456", new EMCallBack() {
             /**
              * 登陆成功的回调
@@ -159,11 +160,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     //设置文字图标
-    private void SetIcon(){
-        TextView icon_back= this.findViewById(R.id.back);
-        TextView icon_add= this.findViewById(R.id.icon_add);
+    private void SetIcon() {
+        TextView icon_back = this.findViewById(R.id.back);
+        TextView icon_add = this.findViewById(R.id.icon_add);
         icon_back.setTypeface(font);
 //        12333333335555
         icon_add.setTypeface(font);
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //设置底部导航栏
-    private void SetTabBar(){
+    private void SetTabBar() {
 
         mBottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar);
         mBottomTabBar.init(getSupportFragmentManager())
@@ -255,20 +255,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //右上角菜单点击事件
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        Log.i("sss","ggg");
-    switch (position){
-        case 0:
+        Log.i("sss", "ggg");
+        switch (position) {
+            case 0:
 
-            break;
-        case 1:
-            Intent i = new Intent(getApplicationContext(),SearchGroupNumberActivity.class);
-            startActivity(i);
-            break;
-        case 2:
-            Intent intent= new Intent(getApplicationContext(),CreateGroupActivity.class);
-            startActivity(intent);
-            break;
-    }
+                break;
+            case 1:
+                Intent i = new Intent(getApplicationContext(), SearchGroupNumberActivity.class);
+                startActivity(i);
+                break;
+            case 2:
+                Intent intent = new Intent(getApplicationContext(), CreateGroupActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 
     @Override
@@ -278,20 +278,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.icon_add:
                 if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
                     mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
                 }
                 break;
             case R.id.back:
-                Intent i = new Intent(MainActivity.this,MapActivity.class);
+                Intent i = new Intent(MainActivity.this, MapActivity.class);
                 startActivity(i);
                 break;
         }
     }
-
-
 
 
 }
