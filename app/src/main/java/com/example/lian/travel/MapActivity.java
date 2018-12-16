@@ -40,10 +40,12 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MapViewLayoutParams;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
+import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.example.lian.travel.Bean.SharePositionBean;
 import com.hyphenate.EMCallBack;
@@ -269,7 +271,11 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //mBaiduMap.setBaiduHeatMapEnabled(true);
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
+//        MyLocationConfiguration config = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, null);
+//        mBaiduMap.setMyLocationConfiguration(config);
         mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
+        UiSettings mUiSettings = mBaiduMap.getUiSettings();
+        mUiSettings.setCompassEnabled(true);
         //配置定位SDK参数
         initLocation();
         mLocationClient.registerLocationListener(myListener);    //注册监听函数

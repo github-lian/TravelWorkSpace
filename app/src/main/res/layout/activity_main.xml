@@ -1,31 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hjm="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
-
-    <com.hjm.bottomtabbar.BottomTabBar
-        android:id="@+id/bottom_tab_bar"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp"
+        android:layout_above="@+id/tabbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        hjm:tab_bar_background="#fff"
-        hjm:tab_divider_background="#E5E5E5"
-        hjm:tab_divider_height="1dp"
-        hjm:tab_font_size="8sp"
-        hjm:tab_img_font_padding="0dp"
-        hjm:tab_img_height="28dp"
-        hjm:tab_img_width="28dp"
-        hjm:tab_isshow_divider="true"
-        hjm:tab_padding_bottom="5dp"
-        hjm:tab_padding_top="8dp"
-        hjm:tab_selected_color="#0099ff"
-        hjm:tab_unselected_color="#969696" />
+        android:layout_height="match_parent"/>
+
+    <com.jpeng.jptabbar.JPTabBar
+        android:id="@+id/tabbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:TabHeight="66dp"
+        app:TabAnimate="None"
+        app:BadgeDraggable="true"
+        app:BadgePadding="4dp"
+        app:BadgeMargin="5dp"
+        app:TabIconSize="24dp"
+        app:BadgeTextSize="11sp"
+        app:TabNormalColor="#969696"
+        app:TabSelectColor="#0099ff"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:hjm="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--tools:context=".MainActivity">-->
+
+
+    <!--<com.hjm.bottomtabbar.BottomTabBar-->
+        <!--android:id="@+id/bottom_tab_bar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--hjm:tab_bar_background="#fff"-->
+        <!--hjm:tab_divider_background="#E5E5E5"-->
+        <!--hjm:tab_divider_height="1dp"-->
+        <!--hjm:tab_font_size="8sp"-->
+        <!--hjm:tab_img_font_padding="0dp"-->
+        <!--hjm:tab_img_height="28dp"-->
+        <!--hjm:tab_img_width="28dp"-->
+        <!--hjm:tab_isshow_divider="true"-->
+        <!--hjm:tab_padding_bottom="5dp"-->
+        <!--hjm:tab_padding_top="8dp"-->
+        <!--hjm:tab_selected_color="#0099ff"-->
+        <!--hjm:tab_unselected_color="#969696" />-->
 
 
 
-</LinearLayout>
+<!--</LinearLayout>-->

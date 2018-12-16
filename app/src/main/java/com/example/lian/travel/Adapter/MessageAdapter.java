@@ -8,7 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.lian.travel.Bean.MessageBean;
+import com.example.lian.travel.MainActivity;
 import com.example.lian.travel.R;
+import com.jpeng.jptabbar.JPTabBar;
 import com.loopj.android.image.SmartImageView;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -50,6 +52,7 @@ public class MessageAdapter extends BaseAdapter {
             viewHolder.msgDesc = (TextView)view.findViewById(R.id.msg_desc);
             viewHolder.msgTime = (TextView)view.findViewById(R.id.msg_time);
             viewHolder.msgPic = (RoundedImageView)view.findViewById(R.id.msg_pic);
+            viewHolder.unread_msg_number = (TextView)view.findViewById(R.id.unread_msg_number);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -80,8 +83,14 @@ public class MessageAdapter extends BaseAdapter {
         }else {
             viewHolder.msgPic.setImageResource(MsgList.get(position).getHead_portrait());
         }
+        if (MsgList.get(position).getUnread_number().equals("0")){
+            viewHolder.unread_msg_number.setVisibility(View.GONE);
+        }else {
+            viewHolder.unread_msg_number.setVisibility(View.VISIBLE);
+            viewHolder.unread_msg_number.setText(MsgList.get(position).getUnread_number());
+        }
         viewHolder.msgTitle.setText(MsgList.get(position).getGroup_name());
-        viewHolder.msgDesc.setText(MsgList.get(position).getSort_msg());
+        viewHolder.msgDesc.setText(MsgList.get(position).getLast_msg());
         viewHolder.msgTime.setText(MsgList.get(position).getTime());
         return view;
     }
@@ -90,6 +99,7 @@ public class MessageAdapter extends BaseAdapter {
         TextView msgTitle;
         TextView msgDesc;
         TextView msgTime;
+        TextView unread_msg_number;
         RoundedImageView msgPic;
     }
 }

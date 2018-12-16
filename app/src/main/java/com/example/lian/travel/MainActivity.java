@@ -6,7 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lian.travel.Adapter.PagerFragmentAdapter;
 import com.example.lian.travel.Fragment.GroupFragment;
 import com.example.lian.travel.Fragment.MessageFragment;
 import com.example.lian.travel.Fragment.MineFragment;
@@ -23,7 +27,13 @@ import com.example.lian.travel.Util.PermisionUtils;
 import com.hjm.bottomtabbar.BottomTabBar;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+import com.jpeng.jptabbar.JPTabBar;
+import com.jpeng.jptabbar.anno.NorIcons;
+import com.jpeng.jptabbar.anno.SeleIcons;
+import com.jpeng.jptabbar.anno.Titles;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -43,146 +53,139 @@ Tips：每天打开Android Studio第一件需要做的事--> pull同步代码 VC
 */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnMenuItemClickListener, OnMenuItemLongClickListener {
-    private Typeface font;
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private BottomTabBar mBottomTabBar;
     public static String action = "MainActivity.action";
+    //设置标题
+    @Titles
+    private static final String[] mTitles={"消息","通知","群组","我的"};
+
+    //设置选中图标
+    @SeleIcons
+    private static final int[] mSelectIcons={R.drawable.select_message,R.drawable.select_notice,R.drawable.select_group,R.drawable.select_mine};
+
+    //设置未选中图标
+    @NorIcons
+    private static final int[] mNormalIcon={R.drawable.icon_msg,R.drawable.icon_notice,R.drawable.icon_group,R.drawable.icon_mine};
+
+    private ViewPager mVp;
+    private JPTabBar mTabBar;
+    private List<Fragment> fragments;
+    private PagerFragmentAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");//引用文字图标
         setContentView(R.layout.activity_main);
+
+        fragmentManager = getSupportFragmentManager();
+
+        mVp = (ViewPager) findViewById(R.id.vp);
+        mTabBar = (JPTabBar) findViewById(R.id.tabbar);
+        //创建一个集合
+        fragments = new ArrayList<>();
+
+        try {
+            fragments.add(MessageFragment.class.newInstance());
+            fragments.add(NoticeFragment.class.newInstance());
+            fragments.add(GroupFragment.class.newInstance());
+            fragments.add(MineFragment.class.newInstance());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        mTabBar.setContainer(mVp);
+
+        //设置适配器
+        adapter = new PagerFragmentAdapter(getSupportFragmentManager(), fragments);
+        mVp.setAdapter(adapter);
+
         //检测读写权限
         PermisionUtils.verifyStoragePermissions(MainActivity.this);
 
-//        initView();//初始化组件
+        initView();//初始化组件
+
 
 
         //SetIcon();  //设置文字图标
 
-        SetTabBar();  //设置底部导航栏
+        //SetTabBar();  //设置底部导航栏
 
         initMenuFragment();  //初始化右上角菜单
 
     }
 
+    public JPTabBar getTabbar() {
+        return mTabBar;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 添加消息监听
+        EMClient.getInstance().chatManager().addMessageListener(msgListener);
+    }
+
     //初始化组件
     private void initView() {
-        EMClient.getInstance().login("ll", "123456", new EMCallBack() {
-            /**
-             * 登陆成功的回调
-             */
-            @Override
-            public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("login", "登陆成功");
-                        // 加载所有会话到内存
-                        EMClient.getInstance().chatManager().loadAllConversations();
-                        // 加载所有群组到内存，如果使用了群组的话
-                        EMClient.getInstance().groupManager().loadAllGroups();
 
-                    }
-                });
-            }
-
-            /**
-             * 登陆错误的回调
-             *
-             * @param i
-             * @param s
-             */
-            @Override
-            public void onError(final int i, final String s) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("lzan13", "登录失败 Error code:" + i + ", message:" + s);
-                        /**
-                         * 关于错误码可以参考官方api详细说明
-                         * http://www.easemob.com/apidoc/android/chat3.0/classcom_1_1hyphenate_1_1_e_m_error.html
-                         */
-                        switch (i) {
-                            // 网络异常 2
-                            case EMError.NETWORK_ERROR:
-                                Toast.makeText(getApplicationContext(), "网络错误 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 无效的用户名 101
-                            case EMError.INVALID_USER_NAME:
-                                Toast.makeText(getApplicationContext(), "无效的用户名 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 无效的密码 102
-                            case EMError.INVALID_PASSWORD:
-                                Toast.makeText(getApplicationContext(), "无效的密码 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 用户认证失败，用户名或密码错误 202
-                            case EMError.USER_AUTHENTICATION_FAILED:
-                                Toast.makeText(getApplicationContext(), "用户认证失败，用户名或密码错误 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 用户不存在 204
-                            case EMError.USER_NOT_FOUND:
-                                Toast.makeText(getApplicationContext(), "用户不存在 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 无法访问到服务器 300
-                            case EMError.SERVER_NOT_REACHABLE:
-                                Toast.makeText(getApplicationContext(), "无法访问到服务器 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 等待服务器响应超时 301
-                            case EMError.SERVER_TIMEOUT:
-                                Toast.makeText(getApplicationContext(), "等待服务器响应超时 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 服务器繁忙 302
-                            case EMError.SERVER_BUSY:
-                                Toast.makeText(getApplicationContext(), "服务器繁忙 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            // 未知 Server 异常 303 一般断网会出现这个错误
-                            case EMError.SERVER_UNKNOWN_ERROR:
-                                Toast.makeText(getApplicationContext(), "未知的服务器异常 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                            default:
-                                Toast.makeText(getApplicationContext(), "ml_sign_in_failed code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
-                                break;
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
     }
 
+    //收到消息
+    EMMessageListener msgListener = new EMMessageListener() {
 
-    //设置文字图标
-    private void SetIcon() {
-        TextView icon_back = this.findViewById(R.id.back);
-        TextView icon_add = this.findViewById(R.id.icon_add);
-        icon_back.setTypeface(font);
-//        12333333335555
-        icon_add.setTypeface(font);
+        @Override
+        public void onMessageReceived(List<EMMessage> messages) {
+            Log.i("ttt", "收到消息了");
+            Log.i("ttt", "消息:" + messages);
+            // 循环遍历当前收到的消息
+            for (EMMessage message : messages) {
+                // 设置消息为已读
+            }
 
-        fragmentManager = getSupportFragmentManager();
+        }
 
-        icon_back.setOnClickListener(this);
-        icon_add.setOnClickListener(this);
-    }
+        @Override
+        public void onCmdMessageReceived(List<EMMessage> messages) {
+
+        }
+
+        @Override
+        public void onMessageRead(List<EMMessage> messages) {
+            //收到已读回执
+        }
+
+        @Override
+        public void onMessageDelivered(List<EMMessage> message) {
+            //收到已送达回执
+        }
+
+        @Override
+        public void onMessageRecalled(List<EMMessage> messages) {
+            //消息被撤回
+        }
+
+        @Override
+        public void onMessageChanged(EMMessage message, Object change) {
+            //消息状态变动
+        }
+    };
+
 
     //设置底部导航栏
     private void SetTabBar() {
 
-        mBottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar);
-        mBottomTabBar.init(getSupportFragmentManager())
-                .addTabItem("消息", R.drawable.icon_msg, MessageFragment.class)
-                .addTabItem("通知", R.drawable.icon_notice, NoticeFragment.class)
-                .addTabItem("群组", R.drawable.icon_group, GroupFragment.class)
-                .addTabItem("我的", R.drawable.icon_mine, MineFragment.class);
+//        mBottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar);
+//        mBottomTabBar.init(getSupportFragmentManager())
+//                .addTabItem("消息", R.drawable.icon_msg, MessageFragment.class)
+//                .addTabItem("通知", R.drawable.icon_notice, NoticeFragment.class)
+//                .addTabItem("群组", R.drawable.icon_group, GroupFragment.class)
+//                .addTabItem("我的", R.drawable.icon_mine, MineFragment.class);
 
     }
 

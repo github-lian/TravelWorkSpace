@@ -2,6 +2,7 @@ package com.example.lian.travel;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -19,6 +20,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hyphenate.EMCallBack;
+import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 
@@ -45,12 +48,19 @@ public class RegisterActivity extends AppCompatActivity {
     EditText psw;
     @Bind(R.id.ed_confirm_pwd)
     EditText confirm_psw;
-
+    private String user;
+    private String password;
+    private SharedPreferences sp;//轻量级储存
+    private SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
+
+        //储存少量数据
+        sp = getSharedPreferences("data", MODE_PRIVATE);
+        editor = sp.edit();
 
         SMSSDK.registerEventHandler(eventHandler);
     }
@@ -80,6 +90,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_register)
     public void setBtn_register(){
+        user = account.getText().toString().trim();
+        password = psw.getText().toString().trim();
         String acc = account.getText().toString().trim();
         String num = ed_nub.getText().toString().trim();
         String psw2 = psw.getText().toString().trim();
@@ -132,7 +144,8 @@ public class RegisterActivity extends AppCompatActivity {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Toast.makeText(getApplicationContext(), "注册成功请登录", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                                                SignIn();
                                             }
                                         });
                                     } catch (HyphenateException e) {
@@ -156,6 +169,102 @@ public class RegisterActivity extends AppCompatActivity {
             }).sendMessage(msg);
         }
     };
+
+    //初始化组件
+    private void SignIn() {
+        EMClient.getInstance().login(user, password, new EMCallBack() {
+            /**
+             * 登陆成功的回调
+             */
+            @Override
+            public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoginActivity.Login_NickName = user;
+                        editor.putString("account",user);
+                        editor.putString("password",password);
+                        editor.commit();
+                        Intent i = new Intent(RegisterActivity.this,MainActivity.class);
+                        startActivity(i);
+                        Log.i("login", "登陆成功");
+                        // 加载所有会话到内存
+                        EMClient.getInstance().chatManager().loadAllConversations();
+                        // 加载所有群组到内存，如果使用了群组的话
+                        EMClient.getInstance().groupManager().loadAllGroups();
+
+                    }
+                });
+            }
+
+            /**
+             * 登陆错误的回调
+             *
+             * @param i
+             * @param s
+             */
+            @Override
+            public void onError(final int i, final String s) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("lzan13", "登录失败 Error code:" + i + ", message:" + s);
+                        /**
+                         * 关于错误码可以参考官方api详细说明
+                         * http://www.easemob.com/apidoc/android/chat3.0/classcom_1_1hyphenate_1_1_e_m_error.html
+                         */
+                        switch (i) {
+                            // 网络异常 2
+                            case EMError.NETWORK_ERROR:
+                                Toast.makeText(getApplicationContext(), "网络错误 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 无效的用户名 101
+                            case EMError.INVALID_USER_NAME:
+                                Toast.makeText(getApplicationContext(), "无效的用户名 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 无效的密码 102
+                            case EMError.INVALID_PASSWORD:
+                                Toast.makeText(getApplicationContext(), "无效的密码 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 用户认证失败，用户名或密码错误 202
+                            case EMError.USER_AUTHENTICATION_FAILED:
+                                Toast.makeText(getApplicationContext(), "用户认证失败，用户名或密码错误 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 用户不存在 204
+                            case EMError.USER_NOT_FOUND:
+                                Toast.makeText(getApplicationContext(), "用户不存在 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 无法访问到服务器 300
+                            case EMError.SERVER_NOT_REACHABLE:
+                                Toast.makeText(getApplicationContext(), "无法访问到服务器 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 等待服务器响应超时 301
+                            case EMError.SERVER_TIMEOUT:
+                                Toast.makeText(getApplicationContext(), "等待服务器响应超时 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 服务器繁忙 302
+                            case EMError.SERVER_BUSY:
+                                Toast.makeText(getApplicationContext(), "服务器繁忙 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            // 未知 Server 异常 303 一般断网会出现这个错误
+                            case EMError.SERVER_UNKNOWN_ERROR:
+                                Toast.makeText(getApplicationContext(), "未知的服务器异常 code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                            default:
+                                Toast.makeText(getApplicationContext(), "ml_sign_in_failed code: " + i + ", message:" + s, Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
+    }
+
     // 使用完EventHandler需注销，否则可能出现内存泄漏
     protected void onDestroy(){
         super.onDestroy();

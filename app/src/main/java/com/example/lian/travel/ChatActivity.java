@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.lian.travel.Adapter.ChatAdapter;
 import com.example.lian.travel.Adapter.CommonFragmentPagerAdapter;
+import com.example.lian.travel.Adapter.holder.ChatAcceptViewHolder;
 import com.example.lian.travel.Bean.FullImageInfo;
 import com.example.lian.travel.Bean.MessageInfo;
 import com.example.lian.travel.Fragment.ChatEmotionFragment;
@@ -45,7 +46,14 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
+import com.hyphenate.util.DateUtils;
 import com.jude.easyrecyclerview.EasyRecyclerView;
+import com.scwang.smartrefresh.header.MaterialHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,6 +64,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -113,12 +123,17 @@ public class ChatActivity extends AppCompatActivity {
     // 当前会话对象
     private EMConversation mConversation;
 
+    private int unread_number;
+    private boolean msg_key =false;
 
+    private RefreshLayout mRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+
+        unread_number = Integer.parseInt(getIntent().getStringExtra("unread_number"));
         Timer timer=new Timer();
         timer.schedule(new TimerTask() {
 
@@ -139,6 +154,60 @@ public class ChatActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
 
+        //初始化下拉刷新
+        mRefreshLayout = this.findViewById(R.id.refreshLayout);
+        //设置 Header 为 Material风格
+        mRefreshLayout.setRefreshHeader(new MaterialHeader(this).setShowBezierWave(true));
+        //设置 Footer 为 球脉冲
+        mRefreshLayout.setRefreshFooter(new BallPulseFooter(this).setSpinnerStyle(SpinnerStyle.Scale));
+
+        //刷新
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                int i = 1;
+                List<EMMessage> msg = new ArrayList<EMMessage>();
+                msg = mConversation.getAllMessages();
+                // 显示前20条历史记录
+                for (EMMessage messge : mConversation.getAllMessages()){
+                    EMTextMessageBody body = (EMTextMessageBody) messge.getBody();
+                    Log.i("msg",body.getMessage()+ " --- "+body.toString());
+                    // 将消息内容和时间显示出来
+                    MessageInfo messagess = new MessageInfo();
+                    if (i%3 == 0){
+                        messagess.setTime(DateUtils.getTimestampString(new Date(messge.getMsgTime())));
+                    }
+                    i++;
+                    messagess.setNickname(messge.getFrom());
+                    messagess.setContent(body.getMessage());
+                    Log.i("timee", DateUtils.getTimestampString(new Date(messge.getMsgTime())));
+                    if (messge.getFrom().equals(LoginActivity.Login_NickName)){
+                        messagess.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
+                        messagess.setHeader("http://image.biaobaiju.com/uploads/20180802/00/1533142727-qTtYHaAgjy.jpg");
+                    }else {
+                        messagess.setType(Constants.CHAT_ITEM_TYPE_LEFT);
+                        messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");
+                    }
+                    messageInfos.add(messagess);
+                    chatAdapter.add(messagess);
+                    chatList.scrollToPosition(chatAdapter.getCount() - 1);
+                    chatAdapter.notifyDataSetChanged();
+                }
+                refreshlayout.finishRefresh();
+                Toast.makeText(getApplicationContext(), "刷新成功!", Toast.LENGTH_LONG).show();
+            }
+        });
+        //加载更多
+        mRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+//                for(int i=0;i<30;i++){
+//                    mData.add("小明"+i);
+//                }
+//                mNameAdapter.notifyDataSetChanged();
+                refreshlayout.finishLoadmore();
+            }
+        });
 
         TextView chat_group_name = this.findViewById(R.id.chat_group_name);
         chat_group_name.setText(getIntent().getStringExtra("group_name"));
@@ -151,8 +220,10 @@ public class ChatActivity extends AppCompatActivity {
     @OnClick(R.id.back)
     public void setBack() {
         Log.i("count","finish==>"+chatAdapter.getCount());
-        Intent i = new Intent(ChatActivity.this,MainActivity.class);
-        startActivity(i);
+        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
+        finish();
+//        Intent i = new Intent(ChatActivity.this,MainActivity.class);
+//        startActivity(i);
     }
 
     @OnClick(R.id.group_more)
@@ -422,6 +493,9 @@ public class ChatActivity extends AppCompatActivity {
         mConversation = EMClient.getInstance().chatManager().getConversation(mChatGroupId, null, true);
         // 设置当前会话未读数为 0
         mConversation.markAllMessagesAsRead();
+        List<EMMessage> msg = new ArrayList<EMMessage>();
+        List<EMMessage> new_msg = new ArrayList<EMMessage>();
+        msg = mConversation.getAllMessages();
         int count = mConversation.getAllMessages().size();
         if (count < mConversation.getAllMsgCount() && count < 20) {
             // 获取已经在列表中的最上边的一条消息id
@@ -429,21 +503,55 @@ public class ChatActivity extends AppCompatActivity {
             // 分页加载更多消息，需要传递已经加载的消息的最上边一条消息的id，以及需要加载的消息的条数
             mConversation.loadMoreMsgFromDB(msgId, 20 - count);
         }
-        // 打开聊天界面获取最后一条消息内容并显示
-        if (mConversation.getAllMessages().size() > 0) {
-            EMMessage messge = mConversation.getLastMessage();
-            EMTextMessageBody body = (EMTextMessageBody) messge.getBody();
-            // 将消息内容和时间显示出来
-            MessageInfo messagess = new MessageInfo();
-            messagess.setNickname(messge.getFrom());
-            messagess.setContent(body.getMessage());
-            messagess.setType(Constants.CHAT_ITEM_TYPE_LEFT);
-            messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");
-            messageInfos.add(messagess);
-            chatAdapter.add(messagess);
-            chatList.scrollToPosition(chatAdapter.getCount() - 1);
-            chatAdapter.notifyDataSetChanged();
+        Collections.reverse(msg);
+        for(int i = 0;i < msg.size();i++) {
+            if (unread_number > msg.size()){
+                EMTextMessageBody body = (EMTextMessageBody) msg.get(i).getBody();
+                Log.i("msg",body.getMessage()+ " --- "+body.toString());
+                // 将消息内容和时间显示出来
+                MessageInfo messagess = new MessageInfo();
+                messagess.setNickname(msg.get(i).getFrom());
+                messagess.setContent(body.getMessage());
+                if (msg.get(i).getFrom().equals(LoginActivity.Login_NickName)){
+                    messagess.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
+                    messagess.setHeader("http://image.biaobaiju.com/uploads/20180802/00/1533142727-qTtYHaAgjy.jpg");
+                }else {
+                    messagess.setType(Constants.CHAT_ITEM_TYPE_LEFT);
+                    messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");
+                }
+                messageInfos.add(messagess);
+                chatAdapter.add(messagess);
+                chatList.scrollToPosition(chatAdapter.getCount() - 1);
+                chatAdapter.notifyDataSetChanged();
+                msg_key = false;
+            }else if (unread_number < msg.size() && i < unread_number){
+                new_msg.add(msg.get(i));
+                msg_key = true;
+            }
         }
+        Collections.reverse(new_msg);
+        if (msg_key){
+            for(int i = 0;i < new_msg.size();i++) {
+                EMTextMessageBody body = (EMTextMessageBody) new_msg.get(i).getBody();
+                // 将消息内容和时间显示出来
+                MessageInfo messagess = new MessageInfo();
+                messagess.setNickname(new_msg.get(i).getFrom());
+                messagess.setContent(body.getMessage());
+                if (new_msg.get(i).getFrom().equals(LoginActivity.Login_NickName)) {
+                    messagess.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
+                    messagess.setHeader("http://image.biaobaiju.com/uploads/20180802/00/1533142727-qTtYHaAgjy.jpg");
+                } else {
+                    messagess.setType(Constants.CHAT_ITEM_TYPE_LEFT);
+                    messagess.setHeader("https://b-ssl.duitang.com/uploads/item/201601/12/20160112200836_dRTZx.jpeg");
+                }
+                messageInfos.add(messagess);
+                chatAdapter.add(messagess);
+                chatList.scrollToPosition(chatAdapter.getCount() - 1);
+                chatAdapter.notifyDataSetChanged();
+            }
+            msg_key = false;
+        }
+
     }
 
     //收到消息
@@ -524,12 +632,18 @@ public class ChatActivity extends AppCompatActivity {
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
 
-    //    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        // 移除消息监听
-//        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 移除消息监听
+        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 移除消息监听
+        EMClient.getInstance().chatManager().removeMessageListener(msgListener);
+    }
 
 }

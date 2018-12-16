@@ -4,15 +4,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-public class UpdateActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button button_update_01,button_update_02;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
+public class UpdateActivity extends AppCompatActivity implements View.OnClickListener {
+    @Bind(R.id.back)
+    ImageView back;
+    private Button button_update_01,button_update_02;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
+        ButterKnife.bind(this);
         button_update_01=(Button)findViewById(R.id.button_update_1);
         button_update_02=(Button)findViewById(R.id.button_update_2);
 
@@ -24,6 +30,9 @@ public class UpdateActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.back:
+                finish();
+                break;
             case R.id.button_update_1:
                 Toast.makeText(this,"当前已是最新版本",Toast.LENGTH_SHORT).show();
                 break;

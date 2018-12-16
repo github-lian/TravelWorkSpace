@@ -3,7 +3,12 @@ package com.example.lian.travel;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,11 +28,22 @@ import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.mob.MobSDK;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private Button btn_login;
@@ -39,18 +55,63 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // 弹出框
     private ProgressDialog mDialog;
 
-    public static String Login_NickName="ll123";
+    public static String Login_NickName="lfs";
     public static final String TAG_EXIT = "exit";
+
+    private SharedPreferences sp;//轻量级储存
+    private SharedPreferences.Editor editor;
+
+    private String sign;
 
     @Bind(R.id.ed_account)
     EditText account;
     @Bind(R.id.ed_password)
     EditText psw;
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    if (TextUtils.isEmpty(sign) || sign.equals("null")) {//后台可能会返回“null”
+                        mDialog.dismiss();
+                        Toast.makeText(getApplicationContext(),"系统错误",Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (sign.equals("1")){
+                            mDialog.dismiss();
+                            Log.i("login", "登陆成功");
+                            Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i1);
+                            // 加载所有会话到内存
+                            EMClient.getInstance().chatManager().loadAllConversations();
+                            // 加载所有群组到内存，如果使用了群组的话
+                            EMClient.getInstance().groupManager().loadAllGroups();
+                        }else if (sign.equals("0")){
+                            mDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"该用户被禁用，无法登陆",Toast.LENGTH_SHORT).show();
+                            SignOut();
+                        }else if (sign.equals("2")){
+                            mDialog.dismiss();
+                            SignOut();
+                        }else {
+                            mDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"系统错误",Toast.LENGTH_SHORT).show();
+                            SignOut();
+                        }
+                    }
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MobSDK.init(this);
         setContentView(R.layout.activity_login);
+        //储存少量数据
+        sp = getSharedPreferences("data", MODE_PRIVATE);
+        editor = sp.edit();
+
         Timer timer=new Timer();
         timer.schedule(new TimerTask() {
 
@@ -60,6 +121,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }, 1000); // 秒后自动弹出
         init();
+        if (!sp.getString("account","0").equals("0")){
+            signIn(sp.getString("account","0"),sp.getString("password","0"));
+        }
     }
 
     @Override
@@ -71,6 +135,48 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 this.finish();
             }
         }
+    }
+
+    //检查用户是否被禁用
+    private void check_login() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                RequestBody body = new FormBody.Builder()
+                        .add("username", LoginActivity.Login_NickName)
+                        .build();
+                Request request = new Request.Builder()
+                        .url(getString(R.string.check_login_url))
+                        .post(body)
+                        .build();
+                Response response;
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        try {
+                            String s = response.body().string();
+                            Log.i("check","s==>"+ s);
+                            JSONObject jsonObject = new JSONObject(s);
+                            sign = jsonObject.getString("sign");
+                            handler.sendEmptyMessage(0);
+                            Log.i("check","sign==>"+ sign);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     protected void init(){
@@ -92,7 +198,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     //Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_LONG).show();
                     if (phoneCode.equals(realCode)) {
                         Toast.makeText(LoginActivity.this, phoneCode + "验证码正确", Toast.LENGTH_SHORT).show();
-                        signIn();
+                        Login_NickName = account.getText().toString().trim();
+                        editor.putString("account",account.getText().toString().trim());
+                        editor.putString("password",psw.getText().toString().trim());
+                        editor.commit();
+                        signIn(account.getText().toString().trim(),psw.getText().toString().trim());
                     } else {
                         Toast.makeText(LoginActivity.this, phoneCode + "验证码错误", Toast.LENGTH_SHORT).show();
                     }
@@ -128,8 +238,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 //String msg = "生成的验证码："+realCode+"输入的验证码:"+phoneCode;
                 //Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_LONG).show();
                 if (phoneCode.equals(realCode)) {
-                    Toast.makeText(LoginActivity.this, phoneCode + "验证码正确", Toast.LENGTH_SHORT).show();
-                    signIn();
+                    Login_NickName = account.getText().toString().trim();
+                    editor.putString("account",account.getText().toString().trim());
+                    editor.putString("password",psw.getText().toString().trim());
+                    editor.commit();
+                    signIn(account.getText().toString().trim(),psw.getText().toString().trim());
                 } else {
                     Toast.makeText(LoginActivity.this, phoneCode + "验证码错误", Toast.LENGTH_SHORT).show();
                 }
@@ -151,9 +264,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 登录方法
      */
-    private void signIn() {
-        String username = account.getText().toString().trim();
-        String password = psw.getText().toString().trim();
+    private void signIn(final String username,final String password) {
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
             mDialog = new ProgressDialog(this);
             mDialog.setMessage("正在登陆，请稍后...");
@@ -167,16 +278,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mDialog.dismiss();
-                            Log.i("login", "登陆成功");
-                            Login_NickName = account.getText().toString().trim();
-                            Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i1);
-                            // 加载所有会话到内存
-                            EMClient.getInstance().chatManager().loadAllConversations();
-                            // 加载所有群组到内存，如果使用了群组的话
-                            EMClient.getInstance().groupManager().loadAllGroups();
-
+                            if (!sp.getString("account","0").equals("0")){
+                                Login_NickName = sp.getString("account","0");
+                            }
+                            editor.putString("account",account.getText().toString().trim());
+                            editor.putString("password",psw.getText().toString().trim());
+                            editor.commit();
+                            check_login();
                         }
                     });
                 }
@@ -251,5 +359,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }else {
             Toast.makeText(LoginActivity.this, "账号密码不能为空!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void SignOut() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                EMClient.getInstance().logout(true, new EMCallBack() {
+
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onProgress(int progress, String status) {
+
+                    }
+
+                    @Override
+                    public void onError(int code, String message) {
+
+                    }
+                });
+                runOnUiThread(new Runnable() {
+                    public void run() {
+
+                    }
+                });
+
+            }
+        }).start();
     }
 }
